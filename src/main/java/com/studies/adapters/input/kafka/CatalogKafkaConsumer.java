@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.studies.domain.dto.BookDTO;
 import com.studies.domain.ports.input.AddBookUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,7 +18,7 @@ public class CatalogKafkaConsumer {
         this.addBookUseCase = addBookUseCase;
     }
 
-    //@KafkaListener(topics = "book-catalog-topic", groupId = "catalog-group")
+    @KafkaListener(topics = "book-topic", groupId = "catalog-group")
     public void consume(String message) throws JsonProcessingException {
         // Assuming the message is a JSON string representing a Book
         // You would typically use a library like Jackson to convert it to a Book object
