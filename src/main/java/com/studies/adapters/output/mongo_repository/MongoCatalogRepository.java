@@ -1,18 +1,18 @@
-package com.studies.adapters.output.repository;
+package com.studies.adapters.output.mongo_repository;
 
 import com.studies.adapters.entity.BookEntity;
 import com.studies.domain.dto.BookDTO;
 import com.studies.domain.ports.output.CatalogRepositoryPort;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-@RequiredArgsConstructor
-public class JpaCatalogRepository implements CatalogRepositoryPort {
+public class MongoCatalogRepository implements CatalogRepositoryPort {
 
-    private final SpringDataCatalogRepository repository;
+    private final SpringMongoCatalogRepository repository;
+
+    public MongoCatalogRepository(SpringMongoCatalogRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public BookDTO saveBook(BookDTO bookDTO) {
