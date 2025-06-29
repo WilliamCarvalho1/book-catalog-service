@@ -3,20 +3,16 @@ package com.studies.adapters.output.repository;
 import com.studies.adapters.entity.BookEntity;
 import com.studies.domain.dto.BookDTO;
 import com.studies.domain.ports.output.CatalogRepositoryPort;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class JpaCatalogRepository implements CatalogRepositoryPort {
 
     private final SpringDataCatalogRepository repository;
-
-    @Autowired
-    public JpaCatalogRepository(SpringDataCatalogRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public BookDTO saveBook(BookDTO bookDTO) {
