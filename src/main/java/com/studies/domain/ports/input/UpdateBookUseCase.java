@@ -4,6 +4,6 @@ import com.studies.domain.dto.BookDTO;
 
 public interface UpdateBookUseCase {
 
-    BookDTO updateBook(int id, BookDTO bookDTO);
+    BookDTO updateBook(String id, BookDTO bookDTO);
 
 }

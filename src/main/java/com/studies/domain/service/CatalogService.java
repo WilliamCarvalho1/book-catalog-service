@@ -23,7 +23,7 @@ public class CatalogService implements AddBookUseCase, GetBookUseCase, UpdateBoo
     }
 
     @Override
-    public BookDTO getBook(int id) {
+    public BookDTO getBook(String id) {
         return catalogRepositoryPort.findById(id);
     }
 
@@ -33,9 +33,9 @@ public class CatalogService implements AddBookUseCase, GetBookUseCase, UpdateBoo
     }
 
     @Override
-    public BookDTO updateBook(int id, BookDTO bookDTO) {
+    public BookDTO updateBook(String id, BookDTO bookDTO) {
 
-        BookDTO existingBook = catalogRepositoryPort.findById(id);
+        BookDTO existingBook = getBook(id);
 
         if (existingBook != null) {
             existingBook.setName(bookDTO.getName());
@@ -49,7 +49,7 @@ public class CatalogService implements AddBookUseCase, GetBookUseCase, UpdateBoo
     }
 
     @Override
-    public void deleteBook(int id) {
+    public void deleteBook(String id) {
         BookDTO bookDTO = getBook(id);
         catalogRepositoryPort.deleteBook(bookDTO);
     }

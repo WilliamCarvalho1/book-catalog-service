@@ -22,8 +22,8 @@ public class MongoCatalogRepository implements CatalogRepositoryPort {
     }
 
     @Override
-    public BookDTO findById(int bookId) {
-        BookEntity entity = repository.findById(String.valueOf(bookId)).orElseThrow();
+    public BookDTO findById(String bookId) {
+        BookEntity entity = repository.findById(bookId).orElseThrow();
 
         return mapToDTO(entity);
     }
@@ -44,7 +44,7 @@ public class MongoCatalogRepository implements CatalogRepositoryPort {
 
     @Override
     public void deleteBook(BookDTO bookDTO) {
-        repository.delete(mapToEntity(bookDTO));
+        repository.deleteById(bookDTO.getId());
     }
 
     private BookEntity mapToEntity(BookDTO dto) {

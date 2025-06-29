@@ -8,7 +8,7 @@ public interface CatalogRepositoryPort {
 
     BookDTO saveBook(BookDTO bookDTO);
 
-    BookDTO findById(int bookId);
+    BookDTO findById(String bookId);
 
     List<BookDTO> findAll();
 

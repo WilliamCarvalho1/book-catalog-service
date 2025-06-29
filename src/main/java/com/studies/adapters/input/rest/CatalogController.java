@@ -35,7 +35,7 @@ public class CatalogController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public BookDTO getBook(@PathVariable int id) {
+    public BookDTO getBook(@PathVariable String id) {
         return getBookUseCase.getBook(id);
     }
 
@@ -47,13 +47,13 @@ public class CatalogController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public BookDTO updateBook(@PathVariable int id, @RequestBody BookDTO bookDTO) {
+    public BookDTO updateBook(@PathVariable String id, @RequestBody BookDTO bookDTO) {
         return updateBookUseCase.updateBook(id, bookDTO);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBook(@PathVariable int id) {
+    public void deleteBook(@PathVariable String id) {
         deleteBookUseCase.deleteBook(id);
     }
 

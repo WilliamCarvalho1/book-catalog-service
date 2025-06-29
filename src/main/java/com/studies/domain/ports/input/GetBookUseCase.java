@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface GetBookUseCase {
 
-    BookDTO getBook(int bookId);
+    BookDTO getBook(String bookId);
 
     List<BookDTO> getAllBooks();
 
