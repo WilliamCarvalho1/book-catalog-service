@@ -3,9 +3,11 @@ package com.studies.adapters.output.mongo_repository;
 import com.studies.adapters.entity.BookEntity;
 import com.studies.domain.dto.BookDTO;
 import com.studies.domain.ports.output.CatalogRepositoryPort;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class MongoCatalogRepository implements CatalogRepositoryPort {
 
     private final SpringMongoCatalogRepository repository;
