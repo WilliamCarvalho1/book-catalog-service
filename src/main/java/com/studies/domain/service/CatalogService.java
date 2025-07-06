@@ -51,6 +51,6 @@ public class CatalogService implements AddBookUseCase, GetBookUseCase, UpdateBoo
     @Override
     public void deleteBook(String id) {
         BookDTO bookDTO = getBook(id);
-        catalogRepositoryPort.deleteBook(bookDTO);
+        catalogRepositoryPort.deleteBook(bookDTO.getId());
     }
 }
