@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.studies.adapters.mapper.BookMapper.*;
+
 @Repository
 public class MongoCatalogRepository implements CatalogRepositoryPort {
 
@@ -45,36 +47,8 @@ public class MongoCatalogRepository implements CatalogRepositoryPort {
     }
 
     @Override
-    public void deleteBook(BookDTO bookDTO) {
-        repository.deleteById(bookDTO.getId());
-    }
-
-    private BookEntity mapToEntity(BookDTO dto) {
-        return BookEntity.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .author(dto.getAuthor())
-                .category(dto.getCategory())
-                .status(dto.getStatus())
-                .price(dto.getPrice())
-                .build();
-    }
-
-    private BookDTO mapToDTO(BookEntity entity) {
-        return BookDTO.builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .author(entity.getAuthor())
-                .category(entity.getCategory())
-                .status(entity.getStatus())
-                .price(entity.getPrice())
-                .build();
-    }
-
-    private List<BookDTO> mapToDTOList(List<BookEntity> entityList) {
-        return entityList.stream()
-                .map(this::mapToDTO)
-                .toList();
+    public void deleteBook(String bookId) {
+        repository.deleteById(bookId);
     }
 
 }

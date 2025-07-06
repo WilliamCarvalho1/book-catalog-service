@@ -14,5 +14,5 @@ public interface CatalogRepositoryPort {
 
     BookDTO updateBook(BookDTO bookDTO);
 
-    void deleteBook(BookDTO bookDTO);
+    void deleteBook(String bookId);
 }
