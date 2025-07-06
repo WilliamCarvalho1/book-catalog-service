@@ -1,7 +1,0 @@
-package com.studies.adapters.output.mongo_repository;
-
-import com.studies.adapters.entity.BookEntity;
-import org.springframework.data.mongodb.repository.MongoRepository;
-
-public interface SpringMongoCatalogRepository extends MongoRepository<BookEntity, String> {
-}

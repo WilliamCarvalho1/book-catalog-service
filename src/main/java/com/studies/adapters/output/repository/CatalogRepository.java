@@ -1,4 +1,4 @@
-package com.studies.adapters.output.mongo_repository;
+package com.studies.adapters.output.repository;
 
 import com.studies.adapters.entity.BookEntity;
 import com.studies.domain.dto.BookDTO;
@@ -10,11 +10,11 @@ import java.util.List;
 import static com.studies.adapters.mapper.BookMapper.*;
 
 @Repository
-public class MongoCatalogRepository implements CatalogRepositoryPort {
+public class CatalogRepository implements CatalogRepositoryPort {
 
-    private final SpringMongoCatalogRepository repository;
+    private final SpringCatalogRepository repository;
 
-    public MongoCatalogRepository(SpringMongoCatalogRepository repository) {
+    public CatalogRepository(SpringCatalogRepository repository) {
         this.repository = repository;
     }
 
