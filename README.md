@@ -50,5 +50,6 @@ But it might cause a lot of headaches if not followed accordingly.
 ![ProjectStructure.png](src/main/resources/img/ProjectStructure.png)
 
 ## Links
-https://romanglushach.medium.com/hexagonal-architecture-the-secret-to-scalable-and-maintainable-code-for-modern-software-d345fdb47347
+- https://romanglushach.medium.com/hexagonal-architecture-the-secret-to-scalable-and-maintainable-code-for-modern-software-d345fdb47347
+- https://scalastic.io/en/hexagonal-architecture-domain/
 
