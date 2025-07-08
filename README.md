@@ -17,6 +17,11 @@ DDD defines the domain model and business rules while Hexagonal architecture enf
 ### SOLID and Hexagonal Architecture
 Hexagonal architecture relies heavily on the Dependency Inversion Principle (the "D" in SOLID), which is fundamental to its design. By defining ports and adapters, it promotes loose coupling and makes it easier to apply other SOLID principles within the domain and infrastructure layers.
 
+### Clean Architecture vs Hexagonal Architecture
+- Clean Architecture essentially provides a blueprint for the "inside the hexagon" in Hexagonal Architecture.
+- The core concepts of ports and adapters are present in Clean Architecture as well, but it adds more structure to the core itself.
+- Think of Hexagonal Architecture as a general approach to decoupling, while Clean Architecture is a more specific implementation that builds on that approach.
+
 ### Benefits of Hexagonal Architecture
 - **Testability:**
 The core logic can be tested in isolation, without needing to set up complex external dependencies like databases or UI frameworks.
