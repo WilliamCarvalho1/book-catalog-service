@@ -12,7 +12,7 @@ It can be used, and often is, with both Domain-Driven Design (DDD) and SOLID pri
   These are implementations of the ports, handling the specific details of interacting with external systems. For example, a database adapter might implement the port for data persistence, while a UI adapter would handle user input and display.
 
 ### DDD and Hexagonal Architecture
-DDD defines the domain model and business rules while Hexagonal architecture enforces the separation of concerns highlighted by DDD by isolating domain logic from external dependencies , therefore protecting and structuring that domain logic.
+DDD defines the domain model and business rules while Hexagonal architecture enforces the separation of concerns highlighted by DDD by isolating domain logic from external dependencies, therefore protecting and structuring that domain logic.
 
 ### SOLID and Hexagonal Architecture
 Hexagonal architecture relies heavily on the Dependency Inversion Principle (the "D" in SOLID), which is fundamental to its design. By defining ports and adapters, it promotes loose coupling and makes it easier to apply other SOLID principles within the domain and infrastructure layers.
