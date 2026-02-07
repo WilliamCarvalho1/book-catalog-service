@@ -7,10 +7,23 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public record BookRequestDTO(
-        @NotNull @NotBlank String name,
-        @NotNull @NotBlank String author,
-        @NotNull @NotBlank String category,
-        @NotNull @Positive BigDecimal price,
-        @Positive int amount
+        @NotNull(message = "name must not be null")
+        @NotBlank(message = "name must not be blank")
+        String name,
+
+        @NotNull(message = "author must not be null")
+        @NotBlank(message = "author must not be blank")
+        String author,
+
+        @NotNull(message = "category must not be null")
+        @NotBlank(message = "category must not be blank")
+        String category,
+
+        @NotNull(message = "price must not be null")
+        @Positive(message = "price must be positive")
+        BigDecimal price,
+
+        @Positive(message = "amount must be positive")
+        int amount
 ) {
 }

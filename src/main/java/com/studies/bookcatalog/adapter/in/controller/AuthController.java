@@ -39,7 +39,7 @@ public class AuthController {
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody AuthRequestDTO request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                    new UsernamePasswordAuthenticationToken(request.username(), request.password())
             );
 
             String token = tokenProvider.generateToken(authentication);

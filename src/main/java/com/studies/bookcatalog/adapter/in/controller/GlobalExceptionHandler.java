@@ -20,20 +20,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RequestNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNotFound(RequestNotFoundException ex) {
-        return build(
-                HttpStatus.NOT_FOUND,
-                ErrorCode.BOOK_NOT_FOUND,
-                ex.getMessage()
-        );
+        return build(HttpStatus.NOT_FOUND, ErrorCode.BOOK_NOT_FOUND, ex);
     }
 
     @ExceptionHandler(InvalidRequestException.class)
     public ResponseEntity<ApiErrorResponse> handleInvalidTransfer(InvalidRequestException ex) {
-        return build(
-                HttpStatus.BAD_REQUEST,
-                ErrorCode.INVALID_BOOK,
-                ex.getMessage()
-        );
+        return build(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_BOOK, ex);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
@@ -50,20 +42,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGeneric(Exception ex) {
-        return build(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                ErrorCode.INTERNAL_ERROR,
-                "Unexpected error"
-        );
+        return build(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.INTERNAL_ERROR, "Unexpected error");
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ApiErrorResponse> handleUnauthorized(UnauthorizedException ex) {
-        return build(
-                HttpStatus.UNAUTHORIZED,
-                ErrorCode.UNAUTHORIZED,
-                ex.getMessage()
-        );
+        return build(HttpStatus.UNAUTHORIZED, ErrorCode.UNAUTHORIZED, ex);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -85,11 +69,11 @@ public class GlobalExceptionHandler {
         );
     }
 
-    private ResponseEntity<ApiErrorResponse> build(
-            HttpStatus status,
-            ErrorCode code,
-            String message
-    ) {
+        private ResponseEntity<ApiErrorResponse> build(HttpStatus status, ErrorCode code, Exception ex) {
+                return build(status, code, ex.getMessage());
+        }
+
+        private ResponseEntity<ApiErrorResponse> build(HttpStatus status, ErrorCode code, String message) {
         return ResponseEntity
                 .status(status)
                 .body(
