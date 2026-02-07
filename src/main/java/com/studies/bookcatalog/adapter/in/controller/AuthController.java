@@ -3,6 +3,7 @@ package com.studies.bookcatalog.adapter.in.controller;
 import com.studies.bookcatalog.adapter.in.controller.dto.AuthRequestDTO;
 import com.studies.bookcatalog.adapter.in.controller.dto.AuthResponseDTO;
 import com.studies.bookcatalog.infrastructure.configuration.security.JwtTokenProvider;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO request) {
+    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody AuthRequestDTO request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
