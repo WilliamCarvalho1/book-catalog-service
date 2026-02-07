@@ -1,3 +1,39 @@
+## Technologies
+
+- Java 17
+- Spring Boot 3 (Web, Validation)
+- Spring Security with JWT (JJWT 0.11.x)
+- Spring Data (via custom ports/adapters)
+- PostgreSQL (via Docker Compose)
+- Flyway (database migrations)
+- springdoc-openapi (Swagger UI)
+- JUnit 5, Mockito, AssertJ (tests)
+- Maven (build tool)
+
+## How to Run
+
+1. **Clone the repository**
+  - `git clone https://github.com/WilliamCarvalho1/book-catalog-service.git`
+  - `cd book-catalog-service`
+
+2. **Start dependencies (PostgreSQL) with Docker Compose**
+  - `docker-compose up -d`
+
+3. **Build the application**
+  - `mvn clean package`
+
+4. **Run the application**
+  - `mvn spring-boot:run`
+  - Or run the generated JAR:
+    - `java -jar target/book-catalog-0.0.1-SNAPSHOT.jar`
+
+5. **Access the API documentation (Swagger UI)**
+  - Open `http://localhost:8080/swagger-ui.html`
+
+6. **Authentication**
+  - First call `/api/auth/login` with valid credentials to obtain a JWT.
+  - Use the returned token as `Authorization: Bearer <token>` in subsequent requests.
+
 # Hexagonal Architecture
 Also known as the Ports and Adapters pattern, is a software design approach that emphasizes loose coupling between the core business logic and external concerns like databases, user interfaces, and other systems. This separation allows for easier testing, maintenance, and modification of the application's core logic without impacting external components, and vice versa.
 
@@ -51,11 +87,9 @@ But it might cause a lot of headaches if not followed accordingly.
 ![HexArchDiagram.png](src/main/resources/img/HexArchDiagram.png)
 ## Ports and Adapters interactions with the Application Diagram
 ![HexArchPortsAndAdaptersFlows.png](src/main/resources/img/HexArchPortsAndAdaptersFlows.png)
-## Project Structure
-![ProjectStructure.png](src/main/resources/img/ProjectStructure.png)
 
 ## Links
 - [Hexagonal Architecture](https://romanglushach.medium.com/hexagonal-architecture-the-secret-to-scalable-and-maintainable-code-for-modern-software-d345fdb47347)
 - [Another Hexagonal Architecture link](https://scalastic.io/en/hexagonal-architecture-domain/)
-- [DDD](https://dev.to/lovestaco/domain-driven-design-3i2j)
 - [SOLID](https://www.digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design)
+- [DDD](https://dev.to/lovestaco/domain-driven-design-3i2j)
