@@ -17,14 +17,14 @@ public class Book {
     private String author;
     private String category;
     private BigDecimal price;
-    private int amount;
+    private int quantity;
 
-    public Book(String name, String author, String category, BigDecimal price, int amount) {
+    public Book(String name, String author, String category, BigDecimal price, int quantity) {
         changeName(name);
         changeAuthor(author);
         changeCategory(category);
         changePrice(price);
-        changeAmount(amount);
+        changeQuantity(quantity);
     }
 
     public void changeName(String name) {
@@ -58,26 +58,26 @@ public class Book {
         this.price = price;
     }
 
-    public void changeAmount(int amount) {
-        if (amount < 0) {
-            throw new DomainException("Book amount must not be negative.");
+    public void changeQuantity(int quantity) {
+        if (quantity < 0) {
+            throw new DomainException("Book quantity must not be negative.");
         }
-        this.amount = amount;
+        this.quantity = quantity;
     }
 
     public void applyUpdate(BookUpdate update) {
         Objects.requireNonNull(update, "BookUpdate must not be null");
 
-        if (update.getPrice() == null && update.getAmount() == null) {
-            throw new DomainException("At least one field (price or amount) must be provided for update.");
+        if (update.getPrice() == null && update.getQuantity() == null) {
+            throw new DomainException("At least one field (price or quantity) must be provided for update.");
         }
 
         if (update.getPrice() != null) {
             changePrice(update.getPrice());
         }
 
-        if (update.getAmount() != null) {
-            changeAmount(update.getAmount());
+        if (update.getQuantity() != null) {
+            changeQuantity(update.getQuantity());
         }
     }
 }

@@ -25,6 +25,6 @@ public class JpaBookEntity {
     public String category;
     @Column(name = "price", nullable = false, precision = 19, scale = 2)
     public BigDecimal price;
-    @Column(name = "amount", nullable = false)
-    public int amount;
+    @Column(name = "quantity", nullable = false)
+    public int quantity;
 }

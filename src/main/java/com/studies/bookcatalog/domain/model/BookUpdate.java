@@ -14,6 +14,6 @@ import java.math.BigDecimal;
 public class BookUpdate {
 
     private BigDecimal price;
-    private Integer amount;
+    private Integer quantity;
 
 }

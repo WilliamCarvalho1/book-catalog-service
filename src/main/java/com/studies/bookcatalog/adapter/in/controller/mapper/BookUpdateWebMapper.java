@@ -13,7 +13,7 @@ public class BookUpdateWebMapper {
 
         return new BookUpdate(
                 requestDTO.price(),
-                requestDTO.amount()
+                requestDTO.quantity()
         );
     }
 }

@@ -18,7 +18,7 @@ public class BookPersistenceMapper {
                 jpaBookEntity.author,
                 jpaBookEntity.category,
                 jpaBookEntity.price,
-                jpaBookEntity.amount
+                jpaBookEntity.quantity
         );
     }
 
@@ -29,7 +29,7 @@ public class BookPersistenceMapper {
                 book.getAuthor(),
                 book.getCategory(),
                 book.getPrice(),
-                book.getAmount()
+                book.getQuantity()
         );
     }
 

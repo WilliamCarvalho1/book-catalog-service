@@ -19,7 +19,7 @@ public class BookWebMapper {
             requestDTO.author(),
             requestDTO.category(),
             requestDTO.price(),
-            requestDTO.amount()
+            requestDTO.quantity()
         );
     }
 
@@ -31,7 +31,7 @@ public class BookWebMapper {
                 book.getAuthor(),
                 book.getCategory(),
                 book.getPrice(),
-                book.getAmount()
+                book.getQuantity()
         );
     }
 

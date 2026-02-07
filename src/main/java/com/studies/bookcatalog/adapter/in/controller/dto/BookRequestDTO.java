@@ -23,7 +23,7 @@ public record BookRequestDTO(
         @Positive(message = "price must be positive")
         BigDecimal price,
 
-        @Positive(message = "amount must be positive")
-        int amount
+        @Positive(message = "quantity must be positive")
+        int quantity
 ) {
 }

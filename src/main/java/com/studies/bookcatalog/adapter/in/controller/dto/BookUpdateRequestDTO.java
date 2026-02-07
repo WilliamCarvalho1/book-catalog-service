@@ -10,8 +10,8 @@ public record BookUpdateRequestDTO(
         @Positive(message = "price must be positive")
         BigDecimal price,
 
-        @NotNull(message = "amount must not be null")
-        @Positive(message = "amount must be positive")
-        Integer amount
+        @NotNull(message = "quantity must not be null")
+        @Positive(message = "quantity must be positive")
+        Integer quantity
 ) {
 }

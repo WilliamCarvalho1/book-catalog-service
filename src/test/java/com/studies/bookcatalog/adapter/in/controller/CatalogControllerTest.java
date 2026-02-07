@@ -115,13 +115,13 @@ class CatalogControllerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().id()).isEqualTo(1L);
         assertThat(response.getBody().price()).isEqualByComparingTo(BigDecimal.TEN);
-        assertThat(response.getBody().amount()).isEqualTo(10);
+        assertThat(response.getBody().quantity()).isEqualTo(10);
 
         ArgumentCaptor<BookUpdate> captor = ArgumentCaptor.forClass(BookUpdate.class);
         verify(updateBookUseCase).updateBook(eq(1L), captor.capture());
         BookUpdate passed = captor.getValue();
         assertThat(passed.getPrice()).isEqualByComparingTo(BigDecimal.TEN);
-        assertThat(passed.getAmount()).isEqualTo(10);
+        assertThat(passed.getQuantity()).isEqualTo(10);
     }
 
     @Test

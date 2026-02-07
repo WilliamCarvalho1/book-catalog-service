@@ -134,7 +134,7 @@ class BookServiceTest {
     class UpdateBook {
 
         @Test
-        @DisplayName("should throw InvalidRequestException when both price and amount are null")
+        @DisplayName("should throw InvalidRequestException when both price and quantity are null")
         void shouldThrowWhenNoFieldsProvided() {
             BookUpdate update = new BookUpdate();
 
@@ -143,7 +143,7 @@ class BookServiceTest {
 
             assertThatThrownBy(() -> service.updateBook(1L, update))
                     .isInstanceOf(InvalidRequestException.class)
-                    .hasMessage("At least one field (price or amount) must be provided for update.");
+                    .hasMessage("At least one field (price or quantity) must be provided for update.");
         }
 
         @ParameterizedTest
@@ -180,25 +180,25 @@ class BookServiceTest {
         }
 
         @Test
-        @DisplayName("should update amount when provided")
-        void shouldUpdateAmount() {
+        @DisplayName("should update quantity when provided")
+        void shouldUpdatequantity() {
             Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 5);
 
             when(repository.findById(1L)).thenReturn(Optional.of(existing));
             when(repository.update(any(Book.class))).thenAnswer(inv -> inv.getArgument(0));
 
             BookUpdate update = new BookUpdate();
-            update.setAmount(10);
+            update.setQuantity(10);
 
             Book result = service.updateBook(1L, update);
 
-            assertThat(result.getAmount()).isEqualTo(10);
+            assertThat(result.getQuantity()).isEqualTo(10);
             verify(repository).update(existing);
         }
 
         @Test
-        @DisplayName("should update both price and amount when both provided")
-        void shouldUpdatePriceAndAmount() {
+        @DisplayName("should update both price and quantity when both provided")
+        void shouldUpdatePriceAndQuantity() {
             Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 1);
 
             when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -206,12 +206,12 @@ class BookServiceTest {
 
             BookUpdate update = new BookUpdate();
             update.setPrice(BigDecimal.TEN);
-            update.setAmount(20);
+            update.setQuantity(20);
 
             Book result = service.updateBook(1L, update);
 
             assertThat(result.getPrice()).isEqualByComparingTo(BigDecimal.TEN);
-            assertThat(result.getAmount()).isEqualTo(20);
+            assertThat(result.getQuantity()).isEqualTo(20);
             verify(repository).update(existing);
         }
     }

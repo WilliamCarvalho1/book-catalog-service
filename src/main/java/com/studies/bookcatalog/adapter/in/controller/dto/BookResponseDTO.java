@@ -8,6 +8,6 @@ public record BookResponseDTO(
         String author,
         String category,
         BigDecimal price,
-        int amount
+        int quantity
 ) {
 }
