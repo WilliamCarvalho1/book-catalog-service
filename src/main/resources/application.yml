@@ -1,16 +1,16 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:calculate_profit
-    driver-class-name: org.h2.Driver
-    username: root
-    password: password
+    url: jdbc:postgresql://localhost:5432/book_catalog
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: postgres
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: create
-    show-sql: true
-  h2:
-    console:
-      enabled: true
-  sql:
-    init:
-      mode: never
+      ddl-auto: update
+    show-sql: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
