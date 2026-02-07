@@ -4,6 +4,7 @@ import com.studies.bookcatalog.adapter.in.controller.error.ApiErrorResponse;
 import com.studies.bookcatalog.adapter.in.controller.error.ErrorCode;
 import com.studies.bookcatalog.application.exception.InvalidRequestException;
 import com.studies.bookcatalog.application.exception.RequestNotFoundException;
+import com.studies.bookcatalog.application.exception.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -53,6 +54,15 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 ErrorCode.INTERNAL_ERROR,
                 "Unexpected error"
+        );
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiErrorResponse> handleUnauthorized(UnauthorizedException ex) {
+        return build(
+                HttpStatus.UNAUTHORIZED,
+                ErrorCode.UNAUTHORIZED,
+                ex.getMessage()
         );
     }
 

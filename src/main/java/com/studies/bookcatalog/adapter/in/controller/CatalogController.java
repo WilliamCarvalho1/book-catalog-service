@@ -11,6 +11,7 @@ import com.studies.bookcatalog.application.port.in.GetBookUseCase;
 import com.studies.bookcatalog.application.port.in.UpdateBookUseCase;
 import com.studies.bookcatalog.domain.model.Book;
 import com.studies.bookcatalog.domain.model.BookUpdate;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/books")
+@SecurityRequirement(name = "bearerAuth")
 public class CatalogController {
 
     private final AddBookUseCase addBookUseCase;
