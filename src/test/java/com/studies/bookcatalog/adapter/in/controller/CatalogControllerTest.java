@@ -47,13 +47,7 @@ class CatalogControllerTest {
                 5
         );
 
-        Book saved = new Book();
-        saved.setId(1L);
-        saved.setName("Book 1");
-        saved.setAuthor("Author");
-        saved.setCategory("Category");
-        saved.setPrice(BigDecimal.TEN);
-        saved.setAmount(5);
+        Book saved = new Book(1L, "Book 1", "Author", "Category", BigDecimal.TEN, 5);
 
         when(addBookUseCase.addBook(any(Book.class))).thenReturn(saved);
 
@@ -74,9 +68,7 @@ class CatalogControllerTest {
     @Test
     @DisplayName("getBook should return mapped response DTO")
     void getBook() {
-        Book book = new Book();
-        book.setId(1L);
-        book.setName("Book 1");
+        Book book = new Book(1L, "Book 1", "Author", "Category", BigDecimal.TEN, 5);
 
         when(getBookUseCase.getBook(1L)).thenReturn(book);
 
@@ -91,12 +83,8 @@ class CatalogControllerTest {
     @Test
     @DisplayName("getAllBooks should return list of mapped DTOs")
     void getAllBooks() {
-        Book book1 = new Book();
-        book1.setId(1L);
-        book1.setName("Book 1");
-        Book book2 = new Book();
-        book2.setId(2L);
-        book2.setName("Book 2");
+        Book book1 = new Book(1L, "Book 1", "Author 1", "Category 1", BigDecimal.ONE, 1);
+        Book book2 = new Book(2L, "Book 2", "Author 2", "Category 2", BigDecimal.TEN, 2);
 
         when(getBookUseCase.getAllBooks()).thenReturn(List.of(book1, book2));
 
@@ -117,10 +105,7 @@ class CatalogControllerTest {
                 10
         );
 
-        Book updated = new Book();
-        updated.setId(1L);
-        updated.setPrice(BigDecimal.TEN);
-        updated.setAmount(10);
+        Book updated = new Book(1L, "Book 1", "Author", "Category", BigDecimal.TEN, 10);
 
         when(updateBookUseCase.updateBook(eq(1L), any(BookUpdate.class))).thenReturn(updated);
 

@@ -7,13 +7,13 @@ import com.studies.bookcatalog.application.port.in.DeleteBookUseCase;
 import com.studies.bookcatalog.application.port.in.GetBookUseCase;
 import com.studies.bookcatalog.application.port.in.UpdateBookUseCase;
 import com.studies.bookcatalog.application.port.out.BookRepositoryPort;
+import com.studies.bookcatalog.domain.exception.DomainException;
 import com.studies.bookcatalog.domain.model.Book;
 import com.studies.bookcatalog.domain.model.BookUpdate;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookService implements AddBookUseCase, GetBookUseCase, UpdateBookUseCase, DeleteBookUseCase {
@@ -57,20 +57,12 @@ public class BookService implements AddBookUseCase, GetBookUseCase, UpdateBookUs
     }
 
     public Book updateBook(Long id, BookUpdate request) {
-        if (request.getPrice() == null && request.getAmount() == null) {
-            throw new InvalidRequestException("At least one field (price or amount) must be provided for update.");
-        }
-
         try {
             Book retrievedBook = getBook(id);
-
-            Optional.ofNullable(request.getPrice())
-                    .ifPresent(retrievedBook::setPrice);
-
-            Optional.ofNullable(request.getAmount())
-                    .ifPresent(retrievedBook::setAmount);
-
+            retrievedBook.applyUpdate(request);
             return repository.update(retrievedBook);
+        } catch (DomainException ex) {
+            throw new InvalidRequestException(ex.getMessage());
         } catch (DataAccessException ex) {
             throw new InvalidRequestException(BD_ERROR_MSG + ex.getMessage());
         }
@@ -78,10 +70,10 @@ public class BookService implements AddBookUseCase, GetBookUseCase, UpdateBookUs
 
     @Override
     public void deleteBook(Long id) {
-        Book retrievedBook = getBook(id);
+        getBook(id);
 
         try {
-            repository.deleteById(retrievedBook.getId());
+            repository.deleteById(id);
         } catch (DataAccessException ex) {
             throw new InvalidRequestException(BD_ERROR_MSG + ex.getMessage());
         }

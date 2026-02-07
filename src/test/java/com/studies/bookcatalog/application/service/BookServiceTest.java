@@ -30,8 +30,7 @@ class BookServiceTest {
     @DisplayName("addBook should delegate to repository and return saved entity")
     void addBookShouldDelegateToRepository() {
         Book request = new Book();
-        Book saved = new Book();
-        saved.setId(1L);
+        Book saved = new Book("Book 1", "Author", "Category", BigDecimal.TEN, 5);
 
         when(repository.save(request)).thenReturn(saved);
 
@@ -76,8 +75,7 @@ class BookServiceTest {
         @Test
         @DisplayName("should return book when found")
         void shouldReturnBookWhenFound() {
-            Book book = new Book();
-            book.setId(1L);
+            Book book = new Book("Book 1", "Author", "Category", BigDecimal.TEN, 5);
 
             when(repository.findById(1L)).thenReturn(Optional.of(book));
 
@@ -100,10 +98,8 @@ class BookServiceTest {
     @Test
     @DisplayName("getAllBooks should return books when repository returns list")
     void getAllBooksNonEmpty() {
-        Book book1 = new Book();
-        book1.setId(1L);
-        Book book2 = new Book();
-        book2.setId(2L);
+        Book book1 = new Book("Book 1", "Author 1", "Category 1", BigDecimal.ONE, 1);
+        Book book2 = new Book("Book 2", "Author 2", "Category 2", BigDecimal.TEN, 2);
 
         when(repository.findAll()).thenReturn(Optional.of(List.of(book1, book2)));
 
@@ -142,6 +138,9 @@ class BookServiceTest {
         void shouldThrowWhenNoFieldsProvided() {
             BookUpdate update = new BookUpdate();
 
+            Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 1);
+            when(repository.findById(1L)).thenReturn(Optional.of(existing));
+
             assertThatThrownBy(() -> service.updateBook(1L, update))
                     .isInstanceOf(InvalidRequestException.class)
                     .hasMessage("At least one field (price or amount) must be provided for update.");
@@ -151,9 +150,7 @@ class BookServiceTest {
         @ValueSource(doubles = {10.0, 20.5})
         @DisplayName("should update price when provided")
         void shouldUpdatePrice(double price) {
-            Book existing = new Book();
-            existing.setId(1L);
-            existing.setPrice(BigDecimal.ONE);
+            Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 1);
 
             when(repository.findById(1L)).thenReturn(Optional.of(existing));
             when(repository.update(any(Book.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -185,9 +182,7 @@ class BookServiceTest {
         @Test
         @DisplayName("should update amount when provided")
         void shouldUpdateAmount() {
-            Book existing = new Book();
-            existing.setId(1L);
-            existing.setAmount(5);
+            Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 5);
 
             when(repository.findById(1L)).thenReturn(Optional.of(existing));
             when(repository.update(any(Book.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -204,10 +199,7 @@ class BookServiceTest {
         @Test
         @DisplayName("should update both price and amount when both provided")
         void shouldUpdatePriceAndAmount() {
-            Book existing = new Book();
-            existing.setId(1L);
-            existing.setPrice(BigDecimal.ONE);
-            existing.setAmount(1);
+            Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 1);
 
             when(repository.findById(1L)).thenReturn(Optional.of(existing));
             when(repository.update(any(Book.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -227,8 +219,7 @@ class BookServiceTest {
     @Test
     @DisplayName("deleteBook should delegate to repository and wrap DataAccessException")
     void deleteBookBehaviour() {
-        Book existing = new Book();
-        existing.setId(1L);
+        Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 1);
 
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
@@ -240,8 +231,7 @@ class BookServiceTest {
     @Test
     @DisplayName("deleteBook should wrap DataAccessException from repository")
     void deleteBookDataAccessException() {
-        Book existing = new Book();
-        existing.setId(1L);
+        Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 1);
 
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
         doThrow(new DataAccessException("db error") {

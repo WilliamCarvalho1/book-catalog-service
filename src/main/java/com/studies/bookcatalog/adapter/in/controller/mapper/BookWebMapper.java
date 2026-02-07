@@ -15,12 +15,11 @@ public class BookWebMapper {
     public static Book toDomain(BookRequestDTO requestDTO) {
 
         return new Book(
-                null,
-                requestDTO.name(),
-                requestDTO.author(),
-                requestDTO.category(),
-                requestDTO.price(),
-                requestDTO.amount()
+            requestDTO.name(),
+            requestDTO.author(),
+            requestDTO.category(),
+            requestDTO.price(),
+            requestDTO.amount()
         );
     }
 
