@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: book_catalog_db
+    environment:
+      POSTGRES_DB: book_catalog
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
