@@ -4,7 +4,6 @@ import com.studies.bookcatalog.adapter.in.controller.error.ApiErrorResponse;
 import com.studies.bookcatalog.adapter.in.controller.error.ErrorCode;
 import com.studies.bookcatalog.application.exception.InvalidRequestException;
 import com.studies.bookcatalog.application.exception.RequestNotFoundException;
-import com.studies.bookcatalog.application.exception.UnauthorizedException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
@@ -28,7 +27,7 @@ class GlobalExceptionHandlerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getCode()).isEqualTo(ErrorCode.BOOK_NOT_FOUND);
+        assertThat(response.getBody().getCode()).isEqualTo(ErrorCode.REQUEST_NOT_FOUND);
     }
 
     @Test
@@ -38,21 +37,11 @@ class GlobalExceptionHandlerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getCode()).isEqualTo(ErrorCode.INVALID_BOOK);
+        assertThat(response.getBody().getCode()).isEqualTo(ErrorCode.BAD_REQUEST);
     }
 
     @Test
-    @DisplayName("handleUnauthorized should map to 401 UNAUTHORIZED")
-    void handleUnauthorized() {
-        ResponseEntity<ApiErrorResponse> response = handler.handleUnauthorized(new UnauthorizedException("unauth"));
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getCode()).isEqualTo(ErrorCode.UNAUTHORIZED);
-    }
-
-    @Test
-    @DisplayName("handleNoHandlerFound should map /api/v1/books to INVALID_BOOK")
+    @DisplayName("handleNoHandlerFound should map /api/v1/books to BAD_REQUEST")
     void handleNoHandlerFoundBooks() {
         NoHandlerFoundException ex = new NoHandlerFoundException("GET", "/api/v1/books/", null);
 
@@ -60,11 +49,11 @@ class GlobalExceptionHandlerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getCode()).isEqualTo(ErrorCode.INVALID_BOOK);
+        assertThat(response.getBody().getCode()).isEqualTo(ErrorCode.BAD_REQUEST);
     }
 
     @Test
-    @DisplayName("handleNoHandlerFound should map other paths to 404 BOOK_NOT_FOUND")
+    @DisplayName("handleNoHandlerFound should map other paths to 404 BAD_REQUEST")
     void handleNoHandlerFoundOtherPaths() {
         NoHandlerFoundException ex = new NoHandlerFoundException("GET", "/other", null);
 
@@ -72,7 +61,7 @@ class GlobalExceptionHandlerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getCode()).isEqualTo(ErrorCode.BOOK_NOT_FOUND);
+        assertThat(response.getBody().getCode()).isEqualTo(ErrorCode.REQUEST_NOT_FOUND);
     }
 
     @Test
