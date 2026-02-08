@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidRequestException.class)
-    public ResponseEntity<ApiErrorResponse> handleInvalidTransfer(InvalidRequestException ex) {
+    public ResponseEntity<ApiErrorResponse> handleInvalidRequest(InvalidRequestException ex) {
         return build(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_BOOK, ex);
     }
 

@@ -13,9 +13,9 @@ import java.util.Optional;
 @Component
 public class BookRepositoryAdapter implements BookRepositoryPort {
 
-    private final TransferJpaRepository repository;
+    private final JpaBookRepository repository;
 
-    public BookRepositoryAdapter(TransferJpaRepository repository) {
+    public BookRepositoryAdapter(JpaBookRepository repository) {
         this.repository = repository;
     }
 

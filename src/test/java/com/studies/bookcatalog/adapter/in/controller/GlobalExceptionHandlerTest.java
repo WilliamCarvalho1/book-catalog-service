@@ -32,9 +32,9 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("handleInvalidTransfer should map to 400 INVALID_BOOK")
+    @DisplayName("handleInvalidRequest should map to 400 INVALID_BOOK")
     void handleInvalid() {
-        ResponseEntity<ApiErrorResponse> response = handler.handleInvalidTransfer(new InvalidRequestException("msg"));
+        ResponseEntity<ApiErrorResponse> response = handler.handleInvalidRequest(new InvalidRequestException("msg"));
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isNotNull();
