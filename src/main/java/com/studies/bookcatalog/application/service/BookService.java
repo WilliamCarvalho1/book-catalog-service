@@ -11,11 +11,9 @@ import com.studies.bookcatalog.domain.exception.DomainException;
 import com.studies.bookcatalog.domain.model.Book;
 import com.studies.bookcatalog.domain.model.BookUpdate;
 import org.springframework.dao.DataAccessException;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class BookService implements AddBookUseCase, GetBookUseCase, UpdateBookUseCase, DeleteBookUseCase {
 
     private final BookRepositoryPort repository;
