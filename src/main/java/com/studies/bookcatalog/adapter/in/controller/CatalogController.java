@@ -48,7 +48,7 @@ public class CatalogController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookResponseDTO> getBook(@PathVariable @NotNull Long id) {
+    public ResponseEntity<BookResponseDTO> getBook(@NotNull @PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(BookWebMapper.toResponseDTO(getBookUseCase.getBook(id)));
     }
@@ -60,9 +60,9 @@ public class CatalogController {
                 .body(BookWebMapper.toResponseDTOList(getBookUseCase.getAllBooks()));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<BookResponseDTO> updateBook(@PathVariable @NotNull Long id,
-                                                      @RequestBody BookUpdateRequestDTO request) {
+    @PatchMapping("/{id}")
+    public ResponseEntity<BookResponseDTO> updateBook(@NotNull @PathVariable Long id,
+                                                      @Valid @RequestBody BookUpdateRequestDTO request) {
         BookUpdate entity = BookUpdateWebMapper.toDomain(request);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -71,7 +71,7 @@ public class CatalogController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBook(@PathVariable @NotNull Long id) {
+    public void deleteBook(@NotNull @PathVariable Long id) {
         deleteBookUseCase.deleteBook(id);
     }
 }
