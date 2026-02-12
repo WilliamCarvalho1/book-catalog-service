@@ -17,14 +17,16 @@ public class JpaBookEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @Column(name = "name", nullable = false)
-    public String name;
+    @Column(name = "title", nullable = false)
+    public String title;
     @Column(name = "author", nullable = false)
     public String author;
     @Column(name = "category", nullable = false)
     public String category;
     @Column(name = "price", nullable = false, precision = 19, scale = 2)
     public BigDecimal price;
+    @Column(name = "publication_year", nullable = false)
+    public int publicationYear;
     @Column(name = "quantity", nullable = false)
     public int quantity;
 }

@@ -29,8 +29,8 @@ class BookServiceTest {
     @Test
     @DisplayName("addBook should delegate to repository and return saved entity")
     void addBookShouldDelegateToRepository() {
-        Book request = new Book();
-        Book saved = new Book("Book 1", "Author", "Category", BigDecimal.TEN, 5);
+        Book request = new Book(1L, "Book 1", "Author", "Category", BigDecimal.TEN, 2020, 5);
+        Book saved = new Book(1L, "Book 1", "Author", "Category", BigDecimal.TEN, 2020, 5);
 
         when(repository.save(request)).thenReturn(saved);
 
@@ -75,7 +75,7 @@ class BookServiceTest {
         @Test
         @DisplayName("should return book when found")
         void shouldReturnBookWhenFound() {
-            Book book = new Book("Book 1", "Author", "Category", BigDecimal.TEN, 5);
+            Book book = new Book(1L, "Book 1", "Author", "Category", BigDecimal.TEN, 2020, 5);
 
             when(repository.findById(1L)).thenReturn(Optional.of(book));
 
@@ -98,8 +98,8 @@ class BookServiceTest {
     @Test
     @DisplayName("getAllBooks should return books when repository returns list")
     void getAllBooksNonEmpty() {
-        Book book1 = new Book("Book 1", "Author 1", "Category 1", BigDecimal.ONE, 1);
-        Book book2 = new Book("Book 2", "Author 2", "Category 2", BigDecimal.TEN, 2);
+        Book book1 = new Book(1L, "Book 1", "Author 1", "Category 1", BigDecimal.ONE, 2020, 1);
+        Book book2 = new Book(2L, "Book 2", "Author 2", "Category 2", BigDecimal.TEN, 2021, 2);
 
         when(repository.findAll()).thenReturn(Optional.of(List.of(book1, book2)));
 
@@ -133,30 +133,23 @@ class BookServiceTest {
     @DisplayName("updateBook")
     class UpdateBook {
 
-        @Test
-        @DisplayName("should throw InvalidRequestException when both price and quantity are null")
-        void shouldThrowWhenNoFieldsProvided() {
-            BookUpdate update = new BookUpdate();
-
-            Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 1);
-            when(repository.findById(1L)).thenReturn(Optional.of(existing));
-
-            assertThatThrownBy(() -> service.updateBook(1L, update))
-                    .isInstanceOf(InvalidRequestException.class)
-                    .hasMessage("At least one field (price or quantity) must be provided for update.");
-        }
-
         @ParameterizedTest
         @ValueSource(doubles = {10.0, 20.5})
         @DisplayName("should update price when provided")
         void shouldUpdatePrice(double price) {
-            Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 1);
+            Book existing = new Book(1L, "Book 1", "Author", "Category", BigDecimal.ONE, 2020, 1);
 
             when(repository.findById(1L)).thenReturn(Optional.of(existing));
             when(repository.update(any(Book.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            BookUpdate update = new BookUpdate();
-            update.setPrice(BigDecimal.valueOf(price));
+            BookUpdate update = new BookUpdate(
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.of(BigDecimal.valueOf(price)),
+                    Optional.empty(),
+                    Optional.empty()
+            );
 
             Book result = service.updateBook(1L, update);
 
@@ -167,10 +160,17 @@ class BookServiceTest {
         @Test
         @DisplayName("should wrap DataAccessException into InvalidRequestException on update")
         void shouldWrapDataAccessExceptionOnUpdate() {
-            BookUpdate update = new BookUpdate();
-            update.setPrice(BigDecimal.TEN);
+            BookUpdate update = new BookUpdate(
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.of(BigDecimal.TEN),
+                    Optional.empty(),
+                    Optional.empty()
+            );
 
-            when(repository.findById(1L)).thenReturn(Optional.of(new Book()));
+            Book existing = new Book(1L, "Book 1", "Author", "Category", BigDecimal.ONE, 2020, 1);
+            when(repository.findById(1L)).thenReturn(Optional.of(existing));
             when(repository.update(any(Book.class))).thenThrow(new DataAccessException("db error") {
             });
 
@@ -181,14 +181,20 @@ class BookServiceTest {
 
         @Test
         @DisplayName("should update quantity when provided")
-        void shouldUpdatequantity() {
-            Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 5);
+        void shouldUpdateQuantity() {
+            Book existing = new Book(1L, "Book 1", "Author", "Category", BigDecimal.ONE, 2020, 5);
 
             when(repository.findById(1L)).thenReturn(Optional.of(existing));
             when(repository.update(any(Book.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            BookUpdate update = new BookUpdate();
-            update.setQuantity(10);
+            BookUpdate update = new BookUpdate(
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.of(10)
+            );
 
             Book result = service.updateBook(1L, update);
 
@@ -199,14 +205,19 @@ class BookServiceTest {
         @Test
         @DisplayName("should update both price and quantity when both provided")
         void shouldUpdatePriceAndQuantity() {
-            Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 1);
+            Book existing = new Book(1L, "Book 1", "Author", "Category", BigDecimal.ONE, 2020, 1);
 
             when(repository.findById(1L)).thenReturn(Optional.of(existing));
             when(repository.update(any(Book.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            BookUpdate update = new BookUpdate();
-            update.setPrice(BigDecimal.TEN);
-            update.setQuantity(20);
+            BookUpdate update = new BookUpdate(
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.of(BigDecimal.TEN),
+                    Optional.empty(),
+                    Optional.of(20)
+            );
 
             Book result = service.updateBook(1L, update);
 
@@ -219,7 +230,7 @@ class BookServiceTest {
     @Test
     @DisplayName("deleteBook should delegate to repository and wrap DataAccessException")
     void deleteBookBehaviour() {
-        Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 1);
+        Book existing = new Book(1L, "Book 1", "Author", "Category", BigDecimal.ONE, 2020, 1);
 
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
@@ -231,7 +242,7 @@ class BookServiceTest {
     @Test
     @DisplayName("deleteBook should wrap DataAccessException from repository")
     void deleteBookDataAccessException() {
-        Book existing = new Book("Book 1", "Author", "Category", BigDecimal.ONE, 1);
+        Book existing = new Book(1L, "Book 1", "Author", "Category", BigDecimal.ONE, 2020, 1);
 
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
         doThrow(new DataAccessException("db error") {

@@ -1,83 +1,86 @@
 package com.studies.bookcatalog.domain.model;
 
 import com.studies.bookcatalog.domain.exception.DomainException;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Objects;
+import java.time.Year;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Book {
-    private Long id;
-    private String name;
+    private final Long id;
+    private String title;
     private String author;
     private String category;
     private BigDecimal price;
-    private int quantity;
+    private Integer publicationYear;
+    private Integer quantity;
 
-    public Book(String name, String author, String category, BigDecimal price, int quantity) {
-        changeName(name);
+    public Book(Long id, String title, String author, String category,
+                BigDecimal price, Integer publicationYear, Integer quantity) {
+
+        this.id = id;
+        changeTitle(title);
         changeAuthor(author);
         changeCategory(category);
         changePrice(price);
+        changePublicationYear(publicationYear);
         changeQuantity(quantity);
     }
 
-    public void changeName(String name) {
-        if (name == null || name.isBlank()) {
-            throw new DomainException("Book name must not be blank.");
-        }
-        this.name = name;
+    public void applyUpdate(BookUpdate update) {
+        update.title().ifPresent(this::changeTitle);
+        update.author().ifPresent(this::changeAuthor);
+        update.category().ifPresent(this::changeCategory);
+        update.price().ifPresent(this::changePrice);
+        update.publicationYear().ifPresent(this::changePublicationYear);
+        update.quantity().ifPresent(this::changeQuantity);
     }
 
-    public void changeAuthor(String author) {
-        if (author == null || author.isBlank()) {
-            throw new DomainException("Book author must not be blank.");
+    private void changeTitle(String title) {
+        if (title.isBlank()) {
+            throw new DomainException("Title cannot be empty");
         }
-        this.author = author;
+        this.title = title.trim();
     }
 
-    public void changeCategory(String category) {
-        if (category == null || category.isBlank()) {
-            throw new DomainException("Book category must not be blank.");
+    private void changeAuthor(String author) {
+        if (author.isBlank()) {
+            throw new DomainException("Author cannot be empty");
         }
-        this.category = category;
+        this.author = author.trim();
     }
 
-    public void changePrice(BigDecimal price) {
-        if (price == null) {
-            throw new DomainException("Book price must not be null.");
+    private void changeCategory(String category) {
+        if (category.isBlank()) {
+            throw new DomainException("Category cannot be empty");
         }
-        if (price.signum() <= 0) {
-            throw new DomainException("Book price must be positive.");
+        this.category = category.trim();
+    }
+
+    private void changePrice(BigDecimal price) {
+        if (price.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new DomainException("Price must be greater than 0");
         }
         this.price = price;
     }
 
-    public void changeQuantity(int quantity) {
+    private void changeQuantity(Integer quantity) {
+
         if (quantity < 0) {
-            throw new DomainException("Book quantity must not be negative.");
+            throw new DomainException("Quantity cannot be negative");
         }
+
         this.quantity = quantity;
     }
 
-    public void applyUpdate(BookUpdate update) {
-        Objects.requireNonNull(update, "BookUpdate must not be null");
+    private void changePublicationYear(Integer year) {
+        int currentYear = Year.now().getValue();
 
-        if (update.getPrice() == null && update.getQuantity() == null) {
-            throw new DomainException("At least one field (price or quantity) must be provided for update.");
+        if (year < 1800 || year > currentYear) {
+            throw new DomainException("Invalid publication year");
         }
 
-        if (update.getPrice() != null) {
-            changePrice(update.getPrice());
-        }
-
-        if (update.getQuantity() != null) {
-            changeQuantity(update.getQuantity());
-        }
+        this.publicationYear = year;
     }
 }

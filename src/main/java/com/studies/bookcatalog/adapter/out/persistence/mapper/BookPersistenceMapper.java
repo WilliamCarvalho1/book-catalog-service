@@ -14,10 +14,11 @@ public class BookPersistenceMapper {
     public static Book toDomain(JpaBookEntity jpaBookEntity) {
         return new Book(
                 jpaBookEntity.id,
-                jpaBookEntity.name,
+                jpaBookEntity.title,
                 jpaBookEntity.author,
                 jpaBookEntity.category,
                 jpaBookEntity.price,
+                jpaBookEntity.publicationYear,
                 jpaBookEntity.quantity
         );
     }
@@ -25,10 +26,11 @@ public class BookPersistenceMapper {
     public static JpaBookEntity toJpaEntity(Book book) {
         return new JpaBookEntity(
                 book.getId(),
-                book.getName(),
+                book.getTitle(),
                 book.getAuthor(),
                 book.getCategory(),
                 book.getPrice(),
+                book.getPublicationYear(),
                 book.getQuantity()
         );
     }

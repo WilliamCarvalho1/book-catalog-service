@@ -1,10 +1,11 @@
-CREATE TABLE IF NOT EXISTS book (
-    id       BIGSERIAL PRIMARY KEY,
-    name     VARCHAR(255)      NOT NULL,
-    author   VARCHAR(255)      NOT NULL,
-    category VARCHAR(255)      NOT NULL,
-    price    NUMERIC(19, 2)    NOT NULL,
-    quantity INTEGER           NOT NULL
+CREATE TABLE IF NOT EXISTS books (
+    id               BIGSERIAL      PRIMARY KEY,
+    title            VARCHAR(255)      NOT NULL,
+    author           VARCHAR(255)      NOT NULL,
+    category         VARCHAR(255)      NOT NULL,
+    price            NUMERIC(19, 2)    NOT NULL,
+    publication_year INTEGER           NOT NULL,
+    quantity         INTEGER           NOT NULL
     );
 );
-CREATE INDEX IF NOT EXISTS idx_code ON book (id);
+CREATE INDEX IF NOT EXISTS idx_code ON books (id);

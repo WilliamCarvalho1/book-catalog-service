@@ -15,11 +15,13 @@ public class BookWebMapper {
     public static Book toDomain(BookRequestDTO requestDTO) {
 
         return new Book(
-            requestDTO.name(),
-            requestDTO.author(),
-            requestDTO.category(),
-            requestDTO.price(),
-            requestDTO.quantity()
+                null,
+                requestDTO.title(),
+                requestDTO.author(),
+                requestDTO.category(),
+                requestDTO.price(),
+                requestDTO.publicationYear(),
+                requestDTO.quantity()
         );
     }
 
@@ -27,10 +29,11 @@ public class BookWebMapper {
 
         return new BookResponseDTO(
                 book.getId(),
-                book.getName(),
+                book.getTitle(),
                 book.getAuthor(),
                 book.getCategory(),
                 book.getPrice(),
+                book.getPublicationYear(),
                 book.getQuantity()
         );
     }

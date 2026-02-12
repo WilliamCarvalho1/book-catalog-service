@@ -1,19 +1,14 @@
 package com.studies.bookcatalog.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.math.BigDecimal;
+import java.util.Optional;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class BookUpdate {
-
-    private BigDecimal price;
-    private Integer quantity;
-
+public record BookUpdate(
+        Optional<String> title,
+        Optional<String> author,
+        Optional<String> category,
+        Optional<BigDecimal> price,
+        Optional<Integer> publicationYear,
+        Optional<Integer> quantity
+) {
 }
