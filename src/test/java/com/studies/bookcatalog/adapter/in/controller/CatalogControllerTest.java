@@ -8,7 +8,7 @@ import com.studies.bookcatalog.application.port.in.DeleteBookUseCase;
 import com.studies.bookcatalog.application.port.in.GetBookUseCase;
 import com.studies.bookcatalog.application.port.in.UpdateBookUseCase;
 import com.studies.bookcatalog.domain.model.Book;
-import com.studies.bookcatalog.domain.model.BookUpdate;
+import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -112,7 +112,7 @@ class CatalogControllerTest {
 
         Book updated = new Book(1L, "Book 1", "Author", "Category", BigDecimal.TEN, 2020, 10);
 
-        when(updateBookUseCase.updateBook(eq(1L), any(BookUpdate.class))).thenReturn(updated);
+        when(updateBookUseCase.updateBook(eq(1L), any(UpdateBookCommand.class))).thenReturn(updated);
 
         ResponseEntity<BookResponseDTO> response = controller.updateBook(1L, request);
 
@@ -122,9 +122,9 @@ class CatalogControllerTest {
         assertThat(response.getBody().price()).isEqualByComparingTo(BigDecimal.TEN);
         assertThat(response.getBody().quantity()).isEqualTo(10);
 
-        ArgumentCaptor<BookUpdate> captor = ArgumentCaptor.forClass(BookUpdate.class);
+        ArgumentCaptor<UpdateBookCommand> captor = ArgumentCaptor.forClass(UpdateBookCommand.class);
         verify(updateBookUseCase).updateBook(eq(1L), captor.capture());
-        BookUpdate passed = captor.getValue();
+        UpdateBookCommand passed = captor.getValue();
         assertThat(passed.price()).contains(BigDecimal.TEN);
         assertThat(passed.quantity()).contains(10);
     }

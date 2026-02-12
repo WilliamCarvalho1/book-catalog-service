@@ -4,7 +4,7 @@ import com.studies.bookcatalog.application.exception.InvalidRequestException;
 import com.studies.bookcatalog.application.exception.RequestNotFoundException;
 import com.studies.bookcatalog.application.port.out.BookRepositoryPort;
 import com.studies.bookcatalog.domain.model.Book;
-import com.studies.bookcatalog.domain.model.BookUpdate;
+import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -142,7 +142,7 @@ class BookServiceTest {
             when(repository.findById(1L)).thenReturn(Optional.of(existing));
             when(repository.update(any(Book.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            BookUpdate update = new BookUpdate(
+            UpdateBookCommand updateBookCommand = new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -151,7 +151,7 @@ class BookServiceTest {
                     Optional.empty()
             );
 
-            Book result = service.updateBook(1L, update);
+            Book result = service.updateBook(1L, updateBookCommand);
 
             assertThat(result.getPrice()).isEqualByComparingTo(BigDecimal.valueOf(price));
             verify(repository).update(existing);
@@ -160,7 +160,7 @@ class BookServiceTest {
         @Test
         @DisplayName("should wrap DataAccessException into InvalidRequestException on update")
         void shouldWrapDataAccessExceptionOnUpdate() {
-            BookUpdate update = new BookUpdate(
+            UpdateBookCommand updateBookCommand = new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -174,7 +174,7 @@ class BookServiceTest {
             when(repository.update(any(Book.class))).thenThrow(new DataAccessException("db error") {
             });
 
-            assertThatThrownBy(() -> service.updateBook(1L, update))
+            assertThatThrownBy(() -> service.updateBook(1L, updateBookCommand))
                     .isInstanceOf(InvalidRequestException.class)
                     .hasMessageContaining("Database error:");
         }
@@ -187,7 +187,7 @@ class BookServiceTest {
             when(repository.findById(1L)).thenReturn(Optional.of(existing));
             when(repository.update(any(Book.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            BookUpdate update = new BookUpdate(
+            UpdateBookCommand updateBookCommand = new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -196,7 +196,7 @@ class BookServiceTest {
                     Optional.of(10)
             );
 
-            Book result = service.updateBook(1L, update);
+            Book result = service.updateBook(1L, updateBookCommand);
 
             assertThat(result.getQuantity()).isEqualTo(10);
             verify(repository).update(existing);
@@ -210,7 +210,7 @@ class BookServiceTest {
             when(repository.findById(1L)).thenReturn(Optional.of(existing));
             when(repository.update(any(Book.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            BookUpdate update = new BookUpdate(
+            UpdateBookCommand updateBookCommand = new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -219,7 +219,7 @@ class BookServiceTest {
                     Optional.of(20)
             );
 
-            Book result = service.updateBook(1L, update);
+            Book result = service.updateBook(1L, updateBookCommand);
 
             assertThat(result.getPrice()).isEqualByComparingTo(BigDecimal.TEN);
             assertThat(result.getQuantity()).isEqualTo(20);

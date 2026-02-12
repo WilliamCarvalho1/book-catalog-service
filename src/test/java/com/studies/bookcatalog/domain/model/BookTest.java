@@ -1,5 +1,6 @@
 package com.studies.bookcatalog.domain.model;
 
+import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import com.studies.bookcatalog.domain.exception.DomainException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -115,7 +116,7 @@ class BookTest {
         void shouldRejectNegativeQuantity() {
             Book book = createValidBook();
 
-            BookUpdate update = new BookUpdate(
+            UpdateBookCommand update = new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -133,7 +134,7 @@ class BookTest {
         void shouldAllowZeroOrPositiveQuantity() {
             Book book = createValidBook();
 
-            book.applyUpdate(new BookUpdate(
+            book.applyUpdate(new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -143,7 +144,7 @@ class BookTest {
             ));
             assertThat(book.getQuantity()).isZero();
 
-            book.applyUpdate(new BookUpdate(
+            book.applyUpdate(new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -162,7 +163,7 @@ class BookTest {
         void shouldRejectOutOfRangeYear() {
             Book book = createValidBook();
 
-            assertThatThrownBy(() -> book.applyUpdate(new BookUpdate(
+            assertThatThrownBy(() -> book.applyUpdate(new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -174,7 +175,7 @@ class BookTest {
                     .hasMessage("Invalid publication year");
 
             int futureYear = Year.now().getValue() + 1;
-            assertThatThrownBy(() -> book.applyUpdate(new BookUpdate(
+            assertThatThrownBy(() -> book.applyUpdate(new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -191,7 +192,7 @@ class BookTest {
             Book book = createValidBook();
             int currentYear = Year.now().getValue();
 
-            book.applyUpdate(new BookUpdate(
+            book.applyUpdate(new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -211,7 +212,7 @@ class BookTest {
             Book book = createValidBook();
             int currentYear = Year.now().getValue();
 
-            BookUpdate update = new BookUpdate(
+            UpdateBookCommand update = new UpdateBookCommand(
                     Optional.of("New Title"),
                     Optional.of("New Author"),
                     Optional.of("New Category"),
@@ -237,7 +238,7 @@ class BookTest {
             Integer originalYear = book.getPublicationYear();
             Integer originalQuantity = book.getQuantity();
 
-            BookUpdate update = new BookUpdate(
+            UpdateBookCommand update = new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),

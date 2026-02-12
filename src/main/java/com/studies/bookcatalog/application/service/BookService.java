@@ -9,7 +9,7 @@ import com.studies.bookcatalog.application.port.in.UpdateBookUseCase;
 import com.studies.bookcatalog.application.port.out.BookRepositoryPort;
 import com.studies.bookcatalog.domain.exception.DomainException;
 import com.studies.bookcatalog.domain.model.Book;
-import com.studies.bookcatalog.domain.model.BookUpdate;
+import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import org.springframework.dao.DataAccessException;
 
 import java.util.List;
@@ -54,10 +54,10 @@ public class BookService implements AddBookUseCase, GetBookUseCase, UpdateBookUs
         }
     }
 
-    public Book updateBook(Long id, BookUpdate request) {
+    public Book updateBook(Long id, UpdateBookCommand command) {
         try {
             Book retrievedBook = getBook(id);
-            retrievedBook.applyUpdate(request);
+            retrievedBook.applyUpdate(command);
             return repository.update(retrievedBook);
         } catch (DomainException ex) {
             throw new InvalidRequestException(ex.getMessage());

@@ -10,7 +10,7 @@ import com.studies.bookcatalog.application.port.in.DeleteBookUseCase;
 import com.studies.bookcatalog.application.port.in.GetBookUseCase;
 import com.studies.bookcatalog.application.port.in.UpdateBookUseCase;
 import com.studies.bookcatalog.domain.model.Book;
-import com.studies.bookcatalog.domain.model.BookUpdate;
+import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -63,10 +63,10 @@ public class CatalogController {
     @PatchMapping("/{id}")
     public ResponseEntity<BookResponseDTO> updateBook(@NotNull @PathVariable Long id,
                                                       @Valid @RequestBody BookUpdateRequestDTO request) {
-        BookUpdate entity = BookUpdateWebMapper.toDomain(request);
+        UpdateBookCommand command = BookUpdateWebMapper.toDomain(request);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(BookWebMapper.toResponseDTO(updateBookUseCase.updateBook(id, entity)));
+                .body(BookWebMapper.toResponseDTO(updateBookUseCase.updateBook(id, command)));
     }
 
     @DeleteMapping("/{id}")

@@ -1,7 +1,7 @@
 package com.studies.bookcatalog.adapter.in.controller.mapper;
 
 import com.studies.bookcatalog.adapter.in.controller.dto.BookUpdateRequestDTO;
-import com.studies.bookcatalog.domain.model.BookUpdate;
+import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 
 import java.util.Optional;
 
@@ -11,9 +11,9 @@ public class BookUpdateWebMapper {
         throw new IllegalStateException("Utility class");
     }
 
-    public static BookUpdate toDomain(BookUpdateRequestDTO requestDTO) {
+    public static UpdateBookCommand toDomain(BookUpdateRequestDTO requestDTO) {
 
-        return new BookUpdate(
+        return new UpdateBookCommand(
                 Optional.ofNullable(requestDTO.title()),
                 Optional.ofNullable(requestDTO.author()),
                 Optional.ofNullable(requestDTO.category()),

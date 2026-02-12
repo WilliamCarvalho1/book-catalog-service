@@ -1,9 +1,9 @@
-package com.studies.bookcatalog.domain.model;
+package com.studies.bookcatalog.application.port.command;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
-public record BookUpdate(
+public record UpdateBookCommand(
         Optional<String> title,
         Optional<String> author,
         Optional<String> category,
