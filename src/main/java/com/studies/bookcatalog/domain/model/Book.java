@@ -29,7 +29,7 @@ public class Book {
         changeQuantity(quantity);
     }
 
-    public void applyUpdate(UpdateBookCommand update) {
+    public void updateBook(UpdateBookCommand update) {
         update.title().ifPresent(this::changeTitle);
         update.author().ifPresent(this::changeAuthor);
         update.category().ifPresent(this::changeCategory);

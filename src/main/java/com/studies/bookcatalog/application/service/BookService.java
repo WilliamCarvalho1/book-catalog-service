@@ -57,7 +57,7 @@ public class BookService implements AddBookUseCase, GetBookUseCase, UpdateBookUs
     public Book updateBook(Long id, UpdateBookCommand command) {
         try {
             Book retrievedBook = getBook(id);
-            retrievedBook.applyUpdate(command);
+            retrievedBook.updateBook(command);
             return repository.update(retrievedBook);
         } catch (DomainException ex) {
             throw new InvalidRequestException(ex.getMessage());

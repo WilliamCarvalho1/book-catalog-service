@@ -125,7 +125,7 @@ class BookTest {
                     Optional.of(-1)
             );
 
-            assertThatThrownBy(() -> book.applyUpdate(update))
+            assertThatThrownBy(() -> book.updateBook(update))
                     .isInstanceOf(DomainException.class)
                     .hasMessage("Quantity cannot be negative");
         }
@@ -134,7 +134,7 @@ class BookTest {
         void shouldAllowZeroOrPositiveQuantity() {
             Book book = createValidBook();
 
-            book.applyUpdate(new UpdateBookCommand(
+            book.updateBook(new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -144,7 +144,7 @@ class BookTest {
             ));
             assertThat(book.getQuantity()).isZero();
 
-            book.applyUpdate(new UpdateBookCommand(
+            book.updateBook(new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -163,7 +163,7 @@ class BookTest {
         void shouldRejectOutOfRangeYear() {
             Book book = createValidBook();
 
-            assertThatThrownBy(() -> book.applyUpdate(new UpdateBookCommand(
+            assertThatThrownBy(() -> book.updateBook(new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -175,7 +175,7 @@ class BookTest {
                     .hasMessage("Invalid publication year");
 
             int futureYear = Year.now().getValue() + 1;
-            assertThatThrownBy(() -> book.applyUpdate(new UpdateBookCommand(
+            assertThatThrownBy(() -> book.updateBook(new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -192,7 +192,7 @@ class BookTest {
             Book book = createValidBook();
             int currentYear = Year.now().getValue();
 
-            book.applyUpdate(new UpdateBookCommand(
+            book.updateBook(new UpdateBookCommand(
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
@@ -221,7 +221,7 @@ class BookTest {
                     Optional.of(50)
             );
 
-            book.applyUpdate(update);
+            book.updateBook(update);
 
             assertThat(book.getTitle()).isEqualTo("New Title");
             assertThat(book.getAuthor()).isEqualTo("New Author");
@@ -247,7 +247,7 @@ class BookTest {
                     Optional.empty()
             );
 
-            book.applyUpdate(update);
+            book.updateBook(update);
 
             assertThat(book.getPrice()).isEqualByComparingTo(originalPrice);
             assertThat(book.getPublicationYear()).isEqualTo(originalYear);
