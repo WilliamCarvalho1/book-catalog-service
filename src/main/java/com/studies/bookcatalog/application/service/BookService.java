@@ -2,6 +2,7 @@ package com.studies.bookcatalog.application.service;
 
 import com.studies.bookcatalog.application.exception.InvalidRequestException;
 import com.studies.bookcatalog.application.exception.RequestNotFoundException;
+import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import com.studies.bookcatalog.application.port.in.AddBookUseCase;
 import com.studies.bookcatalog.application.port.in.DeleteBookUseCase;
 import com.studies.bookcatalog.application.port.in.GetBookUseCase;
@@ -9,7 +10,6 @@ import com.studies.bookcatalog.application.port.in.UpdateBookUseCase;
 import com.studies.bookcatalog.application.port.out.BookRepositoryPort;
 import com.studies.bookcatalog.domain.exception.DomainException;
 import com.studies.bookcatalog.domain.model.Book;
-import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import org.springframework.dao.DataAccessException;
 
 import java.util.List;
@@ -68,10 +68,10 @@ public class BookService implements AddBookUseCase, GetBookUseCase, UpdateBookUs
 
     @Override
     public void deleteBook(Long id) {
-        getBook(id);
+        Book retrievedBook = getBook(id);
 
         try {
-            repository.deleteById(id);
+            repository.deleteById(retrievedBook.getId());
         } catch (DataAccessException ex) {
             throw new InvalidRequestException(BD_ERROR_MSG + ex.getMessage());
         }
