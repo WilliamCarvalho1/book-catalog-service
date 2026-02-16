@@ -4,6 +4,8 @@ import com.studies.bookcatalog.adapter.in.controller.error.ApiErrorResponse;
 import com.studies.bookcatalog.adapter.in.controller.error.ErrorCode;
 import com.studies.bookcatalog.application.exception.InvalidRequestException;
 import com.studies.bookcatalog.application.exception.RequestNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -17,8 +19,11 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(RequestNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNotFound(RequestNotFoundException ex) {
+        logger.warn("Handling RequestNotFoundException: {}", ex.getMessage());
         return build(
                 HttpStatus.NOT_FOUND,
                 ErrorCode.REQUEST_NOT_FOUND,
@@ -28,6 +33,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidRequestException.class)
     public ResponseEntity<ApiErrorResponse> handleInvalidRequest(InvalidRequestException ex) {
+        logger.warn("Handling InvalidRequestException: {}", ex.getMessage());
         return build(
                 HttpStatus.BAD_REQUEST,
                 ErrorCode.BAD_REQUEST,
@@ -37,6 +43,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNoHandlerFound(NoHandlerFoundException ex) {
+        logger.warn("NoHandlerFoundException for URL='{}'", ex.getRequestURL());
         if (ex.getRequestURL().startsWith("/api/v1/books/")) {
             return build(
                     HttpStatus.BAD_REQUEST,
@@ -53,6 +60,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGeneric(Exception ex) {
+        logger.error("Unexpected exception caught in GlobalExceptionHandler", ex);
         return build(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 ErrorCode.INTERNAL_ERROR,
@@ -71,6 +79,7 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining("; "));
 
         String message = details.isBlank() ? "Request validation failed" : details;
+        logger.warn("Validation failed: {}", message);
 
         return build(
                 HttpStatus.BAD_REQUEST,
@@ -88,6 +97,7 @@ public class GlobalExceptionHandler {
     }
 
     private ResponseEntity<ApiErrorResponse> build(HttpStatus status, ErrorCode code, String message) {
+        logger.debug("Building ApiErrorResponse: status={}, code={}, message='{}'", status, code, message);
         return ResponseEntity
                 .status(status)
                 .body(
