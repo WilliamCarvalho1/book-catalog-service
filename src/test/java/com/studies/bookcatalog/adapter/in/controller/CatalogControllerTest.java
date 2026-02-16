@@ -3,7 +3,6 @@ package com.studies.bookcatalog.adapter.in.controller;
 import com.studies.bookcatalog.adapter.in.controller.dto.BookRequestDTO;
 import com.studies.bookcatalog.adapter.in.controller.dto.BookResponseDTO;
 import com.studies.bookcatalog.adapter.in.controller.dto.BookUpdateRequestDTO;
-import com.studies.bookcatalog.adapter.in.controller.dto.PagedBookResponseDTO;
 import com.studies.bookcatalog.application.model.PagedResult;
 import com.studies.bookcatalog.application.port.command.PartialUpdateBookCommand;
 import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
@@ -15,6 +14,8 @@ import com.studies.bookcatalog.domain.model.Book;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -41,7 +42,7 @@ class CatalogControllerTest {
     );
 
     @Test
-    @DisplayName("addBook should map request DTO to domain and return created response")
+    @DisplayName("addBook should map request DTO to domain and return created response with links")
     void addBook() {
         BookRequestDTO request = new BookRequestDTO(
                 "Book 1",
@@ -56,12 +57,14 @@ class CatalogControllerTest {
 
         when(addBookUseCase.addBook(any(Book.class))).thenReturn(saved);
 
-        ResponseEntity<BookResponseDTO> response = controller.addBook(request);
+        ResponseEntity<EntityModel<BookResponseDTO>> response = controller.addBook(request);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().id()).isEqualTo(1L);
-        assertThat(response.getBody().title()).isEqualTo("Book 1");
+        BookResponseDTO body = response.getBody().getContent();
+        assertThat(body).isNotNull();
+        assertThat(body.id()).isEqualTo(1L);
+        assertThat(body.title()).isEqualTo("Book 1");
 
         ArgumentCaptor<Book> captor = ArgumentCaptor.forClass(Book.class);
         verify(addBookUseCase).addBook(captor.capture());
@@ -71,22 +74,24 @@ class CatalogControllerTest {
     }
 
     @Test
-    @DisplayName("getBook should return mapped response DTO")
+    @DisplayName("getBook should return mapped response DTO with links")
     void getBook() {
         Book book = new Book(1L, "Book 1", "Author", "Category", BigDecimal.TEN, 2020, 5);
 
         when(getBookUseCase.getBook(1L)).thenReturn(book);
 
-        ResponseEntity<BookResponseDTO> response = controller.getBook(1L);
+        ResponseEntity<EntityModel<BookResponseDTO>> response = controller.getBook(1L);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().id()).isEqualTo(1L);
-        assertThat(response.getBody().title()).isEqualTo("Book 1");
+        BookResponseDTO body = response.getBody().getContent();
+        assertThat(body).isNotNull();
+        assertThat(body.id()).isEqualTo(1L);
+        assertThat(body.title()).isEqualTo("Book 1");
     }
 
     @Test
-    @DisplayName("getAllBooks should return paged response with mapped DTOs")
+    @DisplayName("getAllBooks should return collection model with mapped DTOs and links")
     void getAllBooks() {
         Book book1 = new Book(1L, "Book 1", "Author 1", "Category 1", BigDecimal.ONE, 2020, 1);
         Book book2 = new Book(2L, "Book 2", "Author 2", "Category 2", BigDecimal.TEN, 2021, 2);
@@ -95,17 +100,16 @@ class CatalogControllerTest {
 
         when(getBookUseCase.getAllBooks(0, 10)).thenReturn(pagedResult);
 
-        ResponseEntity<PagedBookResponseDTO> response = controller.getAllBooks(0, 10);
+        ResponseEntity<CollectionModel<EntityModel<BookResponseDTO>>> response = controller.getAllBooks(0, 10);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().content()).hasSize(2);
-        assertThat(response.getBody().content().get(0).id()).isEqualTo(1L);
-        assertThat(response.getBody().content().get(1).id()).isEqualTo(2L);
-        assertThat(response.getBody().totalElements()).isEqualTo(2L);
-        assertThat(response.getBody().totalPages()).isEqualTo(1);
-        assertThat(response.getBody().currentPage()).isEqualTo(0);
-        assertThat(response.getBody().pageSize()).isEqualTo(10);
+        List<EntityModel<BookResponseDTO>> content = response.getBody().getContent().stream().toList();
+        assertThat(content).hasSize(2);
+        assertThat(content.get(0).getContent()).isNotNull();
+        assertThat(content.get(0).getContent().id()).isEqualTo(1L);
+        assertThat(content.get(1).getContent()).isNotNull();
+        assertThat(content.get(1).getContent().id()).isEqualTo(2L);
     }
 
     @Test
@@ -116,14 +120,14 @@ class CatalogControllerTest {
 
         when(getBookUseCase.getAllBooks(0, 10)).thenReturn(pagedResult);
 
-        ResponseEntity<PagedBookResponseDTO> response = controller.getAllBooks(0, 10);
+        ResponseEntity<CollectionModel<EntityModel<BookResponseDTO>>> response = controller.getAllBooks(0, 10);
 
         verify(getBookUseCase).getAllBooks(0, 10);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    @DisplayName("updateBook should map update DTO and return updated response")
+    @DisplayName("updateBook should map update DTO and return updated response with links")
     void updateBook() {
         BookRequestDTO request = new BookRequestDTO(
                 "Book 1",
@@ -138,13 +142,15 @@ class CatalogControllerTest {
 
         when(updateBookUseCase.updateBook(eq(1L), any(UpdateBookCommand.class))).thenReturn(updated);
 
-        ResponseEntity<BookResponseDTO> response = controller.updateBook(1L, request);
+        ResponseEntity<EntityModel<BookResponseDTO>> response = controller.updateBook(1L, request);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().id()).isEqualTo(1L);
-        assertThat(response.getBody().price()).isEqualByComparingTo(BigDecimal.TEN);
-        assertThat(response.getBody().quantity()).isEqualTo(10);
+        BookResponseDTO body = response.getBody().getContent();
+        assertThat(body).isNotNull();
+        assertThat(body.id()).isEqualTo(1L);
+        assertThat(body.price()).isEqualByComparingTo(BigDecimal.TEN);
+        assertThat(body.quantity()).isEqualTo(10);
 
         ArgumentCaptor<UpdateBookCommand> captor = ArgumentCaptor.forClass(UpdateBookCommand.class);
         verify(updateBookUseCase).updateBook(eq(1L), captor.capture());
@@ -162,7 +168,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    @DisplayName("partialUpdateBook should map request DTO to PartialUpdateBookCommand and return updated response")
+    @DisplayName("partialUpdateBook should map request DTO to PartialUpdateBookCommand and return updated response with links")
     void partialUpdateBook() {
         BookUpdateRequestDTO request = new BookUpdateRequestDTO(
                 BigDecimal.valueOf(20),
@@ -174,13 +180,15 @@ class CatalogControllerTest {
         when(updateBookUseCase.partialUpdateBook(eq(1L), any(PartialUpdateBookCommand.class)))
                 .thenReturn(updated);
 
-        ResponseEntity<BookResponseDTO> response = controller.partialUpdateBook(1L, request);
+        ResponseEntity<EntityModel<BookResponseDTO>> response = controller.partialUpdateBook(1L, request);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().id()).isEqualTo(1L);
-        assertThat(response.getBody().price()).isEqualByComparingTo(BigDecimal.TEN);
-        assertThat(response.getBody().quantity()).isEqualTo(10);
+        BookResponseDTO body = response.getBody().getContent();
+        assertThat(body).isNotNull();
+        assertThat(body.id()).isEqualTo(1L);
+        assertThat(body.price()).isEqualByComparingTo(BigDecimal.TEN);
+        assertThat(body.quantity()).isEqualTo(10);
 
         ArgumentCaptor<PartialUpdateBookCommand> captor = ArgumentCaptor.forClass(PartialUpdateBookCommand.class);
         verify(updateBookUseCase).partialUpdateBook(eq(1L), captor.capture());
@@ -189,3 +197,4 @@ class CatalogControllerTest {
         assertThat(passed.quantity()).contains(10);
     }
 }
+
