@@ -2,9 +2,13 @@ package com.studies.bookcatalog.adapter.out.persistence;
 
 import com.studies.bookcatalog.adapter.out.persistence.entity.JpaBookEntity;
 import com.studies.bookcatalog.adapter.out.persistence.mapper.BookPersistenceMapper;
+import com.studies.bookcatalog.application.model.PagedResult;
 import com.studies.bookcatalog.application.port.out.BookRepositoryPort;
 import com.studies.bookcatalog.domain.model.Book;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -36,10 +40,19 @@ public class BookRepositoryAdapter implements BookRepositoryPort {
     }
 
     @Override
-    public Optional<List<Book>> findAll() {
-        List<JpaBookEntity> entities = repository.findAll();
+    public PagedResult<Book> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<JpaBookEntity> pageResult = repository.findAll(pageable);
 
-        return Optional.of(BookPersistenceMapper.toDomainList(entities));
+        List<Book> content = BookPersistenceMapper.toDomainList(pageResult.getContent());
+
+        return new PagedResult<>(
+                content,
+                pageResult.getTotalElements(),
+                pageResult.getTotalPages(),
+                pageResult.getNumber(),
+                pageResult.getSize()
+        );
     }
 
     @Override

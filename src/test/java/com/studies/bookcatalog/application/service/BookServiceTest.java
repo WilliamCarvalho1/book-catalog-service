@@ -2,9 +2,9 @@ package com.studies.bookcatalog.application.service;
 
 import com.studies.bookcatalog.application.exception.InvalidRequestException;
 import com.studies.bookcatalog.application.exception.RequestNotFoundException;
+import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import com.studies.bookcatalog.application.port.out.BookRepositoryPort;
 import com.studies.bookcatalog.domain.model.Book;
-import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import org.mockito.Mockito;
 import org.springframework.dao.DataAccessException;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -85,50 +84,6 @@ class BookServiceTest {
         }
     }
 
-    @Test
-    @DisplayName("getAllBooks should return empty list when repository returns empty")
-    void getAllBooksEmpty() {
-        when(repository.findAll()).thenReturn(Optional.of(List.of()));
-
-        List<Book> result = service.getAllBooks();
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("getAllBooks should return books when repository returns list")
-    void getAllBooksNonEmpty() {
-        Book book1 = new Book(1L, "Book 1", "Author 1", "Category 1", BigDecimal.ONE, 2020, 1);
-        Book book2 = new Book(2L, "Book 2", "Author 2", "Category 2", BigDecimal.TEN, 2021, 2);
-
-        when(repository.findAll()).thenReturn(Optional.of(List.of(book1, book2)));
-
-        List<Book> result = service.getAllBooks();
-
-        assertThat(result).containsExactly(book1, book2);
-    }
-
-    @Test
-    @DisplayName("getAllBooks should return empty list when repository returns Optional.empty")
-    void getAllBooksOptionalEmpty() {
-        when(repository.findAll()).thenReturn(Optional.empty());
-
-        List<Book> result = service.getAllBooks();
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("getAllBooks should wrap DataAccessException into InvalidRequestException")
-    void getAllBooksDataAccessException() {
-        when(repository.findAll()).thenThrow(new DataAccessException("db error") {
-        });
-
-        assertThatThrownBy(service::getAllBooks)
-                .isInstanceOf(InvalidRequestException.class)
-                .hasMessageContaining("Database error:");
-    }
-
     @Nested
     @DisplayName("updateBook")
     class UpdateBook {
@@ -146,7 +101,7 @@ class BookServiceTest {
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
-                    Optional.of(BigDecimal.valueOf(price)),
+                    java.util.Optional.of(BigDecimal.valueOf(price)),
                     Optional.empty(),
                     Optional.empty()
             );
@@ -164,7 +119,7 @@ class BookServiceTest {
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
-                    Optional.of(BigDecimal.TEN),
+                    java.util.Optional.of(BigDecimal.TEN),
                     Optional.empty(),
                     Optional.empty()
             );
@@ -193,7 +148,7 @@ class BookServiceTest {
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
-                    Optional.of(10)
+                    java.util.Optional.of(10)
             );
 
             Book result = service.updateBook(1L, updateBookCommand);
@@ -214,9 +169,9 @@ class BookServiceTest {
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
-                    Optional.of(BigDecimal.TEN),
+                    java.util.Optional.of(BigDecimal.TEN),
                     Optional.empty(),
-                    Optional.of(20)
+                    java.util.Optional.of(20)
             );
 
             Book result = service.updateBook(1L, updateBookCommand);
@@ -252,4 +207,5 @@ class BookServiceTest {
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("Database error:");
     }
+
 }

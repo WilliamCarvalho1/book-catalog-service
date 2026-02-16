@@ -3,14 +3,16 @@ package com.studies.bookcatalog.adapter.in.controller;
 import com.studies.bookcatalog.adapter.in.controller.dto.BookRequestDTO;
 import com.studies.bookcatalog.adapter.in.controller.dto.BookResponseDTO;
 import com.studies.bookcatalog.adapter.in.controller.dto.BookUpdateRequestDTO;
+import com.studies.bookcatalog.adapter.in.controller.dto.PagedBookResponseDTO;
 import com.studies.bookcatalog.adapter.in.controller.mapper.BookUpdateWebMapper;
 import com.studies.bookcatalog.adapter.in.controller.mapper.BookWebMapper;
+import com.studies.bookcatalog.application.model.PagedResult;
+import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import com.studies.bookcatalog.application.port.in.AddBookUseCase;
 import com.studies.bookcatalog.application.port.in.DeleteBookUseCase;
 import com.studies.bookcatalog.application.port.in.GetBookUseCase;
 import com.studies.bookcatalog.application.port.in.UpdateBookUseCase;
 import com.studies.bookcatalog.domain.model.Book;
-import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -54,13 +56,24 @@ public class CatalogController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<BookResponseDTO>> getAllBooks() {
+    public ResponseEntity<PagedBookResponseDTO> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PagedResult<Book> pagedBooks = getBookUseCase.getAllBooks(page, size);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(BookWebMapper.toResponseDTOList(getBookUseCase.getAllBooks()));
+        List<BookResponseDTO> content = BookWebMapper.toResponseDTOList(pagedBooks.getContent());
+        PagedBookResponseDTO response = new PagedBookResponseDTO(
+                content,
+                pagedBooks.getTotalElements(),
+                pagedBooks.getTotalPages(),
+                pagedBooks.getPageNumber(),
+                pagedBooks.getPageSize()
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<BookResponseDTO> updateBook(@NotNull @PathVariable Long id,
                                                       @Valid @RequestBody BookUpdateRequestDTO request) {
         UpdateBookCommand command = BookUpdateWebMapper.toDomain(request);

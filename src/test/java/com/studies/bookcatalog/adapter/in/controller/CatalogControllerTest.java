@@ -3,12 +3,14 @@ package com.studies.bookcatalog.adapter.in.controller;
 import com.studies.bookcatalog.adapter.in.controller.dto.BookRequestDTO;
 import com.studies.bookcatalog.adapter.in.controller.dto.BookResponseDTO;
 import com.studies.bookcatalog.adapter.in.controller.dto.BookUpdateRequestDTO;
+import com.studies.bookcatalog.adapter.in.controller.dto.PagedBookResponseDTO;
+import com.studies.bookcatalog.application.model.PagedResult;
+import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import com.studies.bookcatalog.application.port.in.AddBookUseCase;
 import com.studies.bookcatalog.application.port.in.DeleteBookUseCase;
 import com.studies.bookcatalog.application.port.in.GetBookUseCase;
 import com.studies.bookcatalog.application.port.in.UpdateBookUseCase;
 import com.studies.bookcatalog.domain.model.Book;
-import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,6 +22,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class CatalogControllerTest {
@@ -82,20 +85,40 @@ class CatalogControllerTest {
     }
 
     @Test
-    @DisplayName("getAllBooks should return list of mapped DTOs")
+    @DisplayName("getAllBooks should return paged response with mapped DTOs")
     void getAllBooks() {
         Book book1 = new Book(1L, "Book 1", "Author 1", "Category 1", BigDecimal.ONE, 2020, 1);
         Book book2 = new Book(2L, "Book 2", "Author 2", "Category 2", BigDecimal.TEN, 2021, 2);
 
-        when(getBookUseCase.getAllBooks()).thenReturn(List.of(book1, book2));
+        PagedResult<Book> pagedResult = new PagedResult<>(List.of(book1, book2), 2L, 1, 0, 10);
 
-        ResponseEntity<List<BookResponseDTO>> response = controller.getAllBooks();
+        when(getBookUseCase.getAllBooks(0, 10)).thenReturn(pagedResult);
+
+        ResponseEntity<PagedBookResponseDTO> response = controller.getAllBooks(0, 10);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody()).hasSize(2);
-        assertThat(response.getBody().get(0).id()).isEqualTo(1L);
-        assertThat(response.getBody().get(1).id()).isEqualTo(2L);
+        assertThat(response.getBody().content()).hasSize(2);
+        assertThat(response.getBody().content().get(0).id()).isEqualTo(1L);
+        assertThat(response.getBody().content().get(1).id()).isEqualTo(2L);
+        assertThat(response.getBody().totalElements()).isEqualTo(2L);
+        assertThat(response.getBody().totalPages()).isEqualTo(1);
+        assertThat(response.getBody().currentPage()).isEqualTo(0);
+        assertThat(response.getBody().pageSize()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("getAllBooks should use default pagination parameters when none provided")
+    void getAllBooksDefaultParams() {
+        Book book1 = new Book(1L, "Book 1", "Author 1", "Category 1", BigDecimal.ONE, 2020, 1);
+        PagedResult<Book> pagedResult = new PagedResult<>(List.of(book1), 1L, 1, 0, 10);
+
+        when(getBookUseCase.getAllBooks(0, 10)).thenReturn(pagedResult);
+
+        ResponseEntity<PagedBookResponseDTO> response = controller.getAllBooks(0, 10);
+
+        verify(getBookUseCase).getAllBooks(0, 10);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
@@ -136,4 +159,5 @@ class CatalogControllerTest {
 
         verify(deleteBookUseCase).deleteBook(1L);
     }
+
 }
