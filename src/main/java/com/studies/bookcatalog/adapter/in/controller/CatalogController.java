@@ -33,6 +33,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @SecurityRequirement(name = "bearerAuth")
 public class CatalogController {
 
+    private static final int DEFAULT_PAGE = 0;
+    private static final int DEFAULT_SIZE = 10;
+
     private final AddBookUseCase addBookUseCase;
     private final GetBookUseCase getBookUseCase;
     private final UpdateBookUseCase updateBookUseCase;
@@ -52,9 +55,7 @@ public class CatalogController {
         Book created = addBookUseCase.addBook(entity);
         BookResponseDTO body = BookWebMapper.toResponseDTO(created);
 
-        EntityModel<BookResponseDTO> resource = EntityModel.of(body,
-                linkTo(methodOn(CatalogController.class).getBook(created.getId())).withSelfRel(),
-                linkTo(methodOn(CatalogController.class).getAllBooks(0, 10)).withRel("books"));
+        EntityModel<BookResponseDTO> resource = toBookResource(created.getId(), body);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(resource);
     }
@@ -63,17 +64,15 @@ public class CatalogController {
     public ResponseEntity<EntityModel<BookResponseDTO>> getBook(@NotNull @PathVariable Long id) {
         BookResponseDTO body = BookWebMapper.toResponseDTO(getBookUseCase.getBook(id));
 
-        EntityModel<BookResponseDTO> resource = EntityModel.of(body,
-                linkTo(methodOn(CatalogController.class).getBook(id)).withSelfRel(),
-                linkTo(methodOn(CatalogController.class).getAllBooks(0, 10)).withRel("books"));
+        EntityModel<BookResponseDTO> resource = toBookResource(id, body);
 
         return ResponseEntity.status(HttpStatus.OK).body(resource);
     }
 
     @GetMapping("")
     public ResponseEntity<CollectionModel<EntityModel<BookResponseDTO>>> getAllBooks(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "" + DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = "" + DEFAULT_SIZE) int size) {
         PagedResult<Book> pagedBooks = getBookUseCase.getAllBooks(page, size);
 
         List<EntityModel<BookResponseDTO>> items = pagedBooks.getContent().stream()
@@ -97,9 +96,7 @@ public class CatalogController {
         UpdateBookCommand command = BookUpdateWebMapper.toDomain(request);
         BookResponseDTO body = BookWebMapper.toResponseDTO(updateBookUseCase.updateBook(id, command));
 
-        EntityModel<BookResponseDTO> resource = EntityModel.of(body,
-                linkTo(methodOn(CatalogController.class).getBook(id)).withSelfRel(),
-                linkTo(methodOn(CatalogController.class).getAllBooks(0, 10)).withRel("books"));
+        EntityModel<BookResponseDTO> resource = toBookResource(id, body);
 
         return ResponseEntity.status(HttpStatus.OK).body(resource);
     }
@@ -110,9 +107,7 @@ public class CatalogController {
         PartialUpdateBookCommand command = BookUpdateWebMapper.toDomain(request);
         BookResponseDTO body = BookWebMapper.toResponseDTO(updateBookUseCase.partialUpdateBook(id, command));
 
-        EntityModel<BookResponseDTO> resource = EntityModel.of(body,
-                linkTo(methodOn(CatalogController.class).getBook(id)).withSelfRel(),
-                linkTo(methodOn(CatalogController.class).getAllBooks(0, 10)).withRel("books"));
+        EntityModel<BookResponseDTO> resource = toBookResource(id, body);
 
         return ResponseEntity.status(HttpStatus.OK).body(resource);
     }
@@ -122,4 +117,12 @@ public class CatalogController {
     public void deleteBook(@NotNull @PathVariable Long id) {
         deleteBookUseCase.deleteBook(id);
     }
+
+    // Helper to consistently build HATEOAS resource for a single book
+    private EntityModel<BookResponseDTO> toBookResource(Long id, BookResponseDTO body) {
+        return EntityModel.of(body,
+                linkTo(methodOn(CatalogController.class).getBook(id)).withSelfRel(),
+                linkTo(methodOn(CatalogController.class).getAllBooks(DEFAULT_PAGE, DEFAULT_SIZE)).withRel("books"));
+    }
+
 }
