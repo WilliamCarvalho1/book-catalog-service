@@ -5,6 +5,7 @@ import com.studies.bookcatalog.adapter.in.controller.dto.BookResponseDTO;
 import com.studies.bookcatalog.adapter.in.controller.dto.BookUpdateRequestDTO;
 import com.studies.bookcatalog.adapter.in.controller.dto.PagedBookResponseDTO;
 import com.studies.bookcatalog.application.model.PagedResult;
+import com.studies.bookcatalog.application.port.command.PartialUpdateBookCommand;
 import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import com.studies.bookcatalog.application.port.in.AddBookUseCase;
 import com.studies.bookcatalog.application.port.in.DeleteBookUseCase;
@@ -124,7 +125,7 @@ class CatalogControllerTest {
     @Test
     @DisplayName("updateBook should map update DTO and return updated response")
     void updateBook() {
-        BookUpdateRequestDTO request = new BookUpdateRequestDTO(
+        BookRequestDTO request = new BookRequestDTO(
                 "Book 1",
                 "Author",
                 "Category",
@@ -160,4 +161,31 @@ class CatalogControllerTest {
         verify(deleteBookUseCase).deleteBook(1L);
     }
 
+    @Test
+    @DisplayName("partialUpdateBook should map request DTO to PartialUpdateBookCommand and return updated response")
+    void partialUpdateBook() {
+        BookUpdateRequestDTO request = new BookUpdateRequestDTO(
+                BigDecimal.valueOf(20),
+                10
+        );
+
+        Book updated = new Book(1L, "Book 1", "Author", "Category", BigDecimal.TEN, 2020, 10);
+
+        when(updateBookUseCase.partialUpdateBook(eq(1L), any(PartialUpdateBookCommand.class)))
+                .thenReturn(updated);
+
+        ResponseEntity<BookResponseDTO> response = controller.partialUpdateBook(1L, request);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().id()).isEqualTo(1L);
+        assertThat(response.getBody().price()).isEqualByComparingTo(BigDecimal.TEN);
+        assertThat(response.getBody().quantity()).isEqualTo(10);
+
+        ArgumentCaptor<PartialUpdateBookCommand> captor = ArgumentCaptor.forClass(PartialUpdateBookCommand.class);
+        verify(updateBookUseCase).partialUpdateBook(eq(1L), captor.capture());
+        PartialUpdateBookCommand passed = captor.getValue();
+        assertThat(passed.price()).contains(BigDecimal.valueOf(20));
+        assertThat(passed.quantity()).contains(10);
+    }
 }

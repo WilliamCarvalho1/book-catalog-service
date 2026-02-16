@@ -7,6 +7,7 @@ import com.studies.bookcatalog.adapter.in.controller.dto.PagedBookResponseDTO;
 import com.studies.bookcatalog.adapter.in.controller.mapper.BookUpdateWebMapper;
 import com.studies.bookcatalog.adapter.in.controller.mapper.BookWebMapper;
 import com.studies.bookcatalog.application.model.PagedResult;
+import com.studies.bookcatalog.application.port.command.PartialUpdateBookCommand;
 import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import com.studies.bookcatalog.application.port.in.AddBookUseCase;
 import com.studies.bookcatalog.application.port.in.DeleteBookUseCase;
@@ -75,11 +76,20 @@ public class CatalogController {
 
     @PutMapping("/{id}")
     public ResponseEntity<BookResponseDTO> updateBook(@NotNull @PathVariable Long id,
-                                                      @Valid @RequestBody BookUpdateRequestDTO request) {
+                                                      @Valid @RequestBody BookRequestDTO request) {
         UpdateBookCommand command = BookUpdateWebMapper.toDomain(request);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(BookWebMapper.toResponseDTO(updateBookUseCase.updateBook(id, command)));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<BookResponseDTO> partialUpdateBook(@NotNull @PathVariable Long id,
+                                                             @Valid @RequestBody BookUpdateRequestDTO request) {
+        PartialUpdateBookCommand command = BookUpdateWebMapper.toDomain(request);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BookWebMapper.toResponseDTO(updateBookUseCase.partialUpdateBook(id, command)));
     }
 
     @DeleteMapping("/{id}")

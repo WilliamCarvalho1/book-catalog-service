@@ -1,5 +1,6 @@
 package com.studies.bookcatalog.domain.model;
 
+import com.studies.bookcatalog.application.port.command.PartialUpdateBookCommand;
 import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import com.studies.bookcatalog.domain.exception.DomainException;
 import lombok.Getter;
@@ -35,6 +36,11 @@ public class Book {
         update.category().ifPresent(this::changeCategory);
         update.price().ifPresent(this::changePrice);
         update.publicationYear().ifPresent(this::changePublicationYear);
+        update.quantity().ifPresent(this::changeQuantity);
+    }
+
+    public void partialUpdateBook(PartialUpdateBookCommand update) {
+        update.price().ifPresent(this::changePrice);
         update.quantity().ifPresent(this::changeQuantity);
     }
 

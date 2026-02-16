@@ -3,6 +3,7 @@ package com.studies.bookcatalog.application.service;
 import com.studies.bookcatalog.application.exception.InvalidRequestException;
 import com.studies.bookcatalog.application.exception.RequestNotFoundException;
 import com.studies.bookcatalog.application.model.PagedResult;
+import com.studies.bookcatalog.application.port.command.PartialUpdateBookCommand;
 import com.studies.bookcatalog.application.port.command.UpdateBookCommand;
 import com.studies.bookcatalog.application.port.in.AddBookUseCase;
 import com.studies.bookcatalog.application.port.in.DeleteBookUseCase;
@@ -58,10 +59,24 @@ public class BookService implements AddBookUseCase, GetBookUseCase, UpdateBookUs
         }
     }
 
+    @Override
     public Book updateBook(Long id, UpdateBookCommand command) {
         try {
             Book retrievedBook = getBook(id);
             retrievedBook.updateBook(command);
+            return repository.update(retrievedBook);
+        } catch (DomainException ex) {
+            throw new InvalidRequestException(ex.getMessage());
+        } catch (DataAccessException ex) {
+            throw new InvalidRequestException(BD_ERROR_MSG + ex.getMessage());
+        }
+    }
+
+    @Override
+    public Book partialUpdateBook(Long id, PartialUpdateBookCommand updateBookCommand) {
+        try {
+            Book retrievedBook = getBook(id);
+            retrievedBook.partialUpdateBook(updateBookCommand);
             return repository.update(retrievedBook);
         } catch (DomainException ex) {
             throw new InvalidRequestException(ex.getMessage());
