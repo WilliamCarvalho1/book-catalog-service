@@ -10,6 +10,6 @@ public record BookUpdateRequestDTO(
         BigDecimal price,
 
         @PositiveOrZero(message = "quantity must be zero or positive")
-        int quantity
+        Integer quantity
 ) {
 }

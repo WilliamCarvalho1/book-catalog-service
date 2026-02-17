@@ -29,7 +29,7 @@ public class BookUpdateWebMapper {
 
         return new PartialUpdateBookCommand(
                 Optional.ofNullable(requestDTO.price()),
-                Optional.of(requestDTO.quantity())
+                Optional.ofNullable(requestDTO.quantity())
         );
     }
 }
