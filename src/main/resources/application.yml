@@ -19,4 +19,4 @@ security:
   jwt:
     secret: "change-this-secret-in-prod"
 #    Expiration time is so short in order to test token expiration during development. Adjust as needed.
-    expiration-minutes: 1
+    expiration-minutes: 60
