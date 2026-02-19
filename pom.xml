@@ -9,10 +9,10 @@
         <relativePath/>
     </parent>
     <groupId>com.studies</groupId>
-    <artifactId>book-catalog</artifactId>
+    <artifactId>book-store</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Book Catalog</name>
-    <description>Book Catalog API</description>
+    <name>Book Store</name>
+    <description>Book Store API</description>
     <url/>
 
     <properties>

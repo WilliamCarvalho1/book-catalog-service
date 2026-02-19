@@ -1,0 +1,32 @@
+package com.studies.bookstore.adapter.out.persistence.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+@Entity
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "books")
+public class JpaBookEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
+
+    @Column(name = "title", nullable = false)
+    public String title;
+    @Column(name = "author", nullable = false)
+    public String author;
+    @Column(name = "category", nullable = false)
+    public String category;
+    @Column(name = "price", nullable = false, precision = 19, scale = 2)
+    public BigDecimal price;
+    @Column(name = "publication_year", nullable = false)
+    public int publicationYear;
+    @Column(name = "quantity", nullable = false)
+    public int quantity;
+}

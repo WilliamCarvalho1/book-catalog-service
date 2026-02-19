@@ -13,8 +13,8 @@
 ## How to Run
 
 1. **Clone the repository**
-  - `git clone https://github.com/WilliamCarvalho1/book-catalog-service.git`
-  - `cd book-catalog-service`
+  - `git clone https://github.com/WilliamCarvalho1/book-store.git`
+  - `cd book-store`
 
 2. **Start dependencies (PostgreSQL) with Docker Compose**
   - `docker-compose up -d`
@@ -25,7 +25,7 @@
 4. **Run the application**
   - `mvn spring-boot:run`
   - Or run the generated JAR:
-    - `java -jar target/book-catalog-0.0.1-SNAPSHOT.jar`
+    - `java -jar target/book-store-0.0.1-SNAPSHOT.jar`
 
 5. **Access the API documentation (Swagger UI)**
   - Open `http://localhost:8080/swagger-ui.html`
