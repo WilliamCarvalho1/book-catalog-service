@@ -3,6 +3,7 @@ package com.studies.bookstore.application.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.studies.bookstore.application.port.in.ExportCartUseCase;
+import com.studies.bookstore.application.port.in.GetCartUseCase;
 import com.studies.bookstore.domain.model.ShoppingCart;
 import com.studies.bookstore.infrastructure.configuration.CartExportProperties;
 import org.slf4j.Logger;
@@ -22,10 +23,20 @@ public class ShoppingCartExportService implements ExportCartUseCase {
 
     private final ObjectMapper objectMapper;
     private final CartExportProperties properties;
+    private final GetCartUseCase getCartUseCase;
 
-    public ShoppingCartExportService(ObjectMapper objectMapper, CartExportProperties properties) {
+    public ShoppingCartExportService(ObjectMapper objectMapper,
+                                     CartExportProperties properties,
+                                     GetCartUseCase getCartUseCase) {
         this.objectMapper = objectMapper;
         this.properties = properties;
+        this.getCartUseCase = getCartUseCase;
+    }
+
+    @Override
+    public String exportCartForUser(String userId) {
+        ShoppingCart cart = getCartUseCase.getCart(userId);
+        return exportCart(cart);
     }
 
     /**
@@ -67,4 +78,3 @@ public class ShoppingCartExportService implements ExportCartUseCase {
         return userId.replaceAll("[^a-zA-Z0-9._-]", "_");
     }
 }
-

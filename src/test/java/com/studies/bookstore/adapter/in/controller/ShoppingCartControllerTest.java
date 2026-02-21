@@ -4,13 +4,13 @@ import com.studies.bookstore.adapter.in.controller.dto.CartItemRequestDTO;
 import com.studies.bookstore.adapter.in.controller.dto.CartItemUpdateRequestDTO;
 import com.studies.bookstore.adapter.in.controller.dto.ShoppingCartResponseDTO;
 import com.studies.bookstore.application.port.in.*;
-import com.studies.bookstore.application.service.ShoppingCartExportService;
 import com.studies.bookstore.domain.model.CartItem;
 import com.studies.bookstore.domain.model.ShoppingCart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,7 +32,7 @@ class ShoppingCartControllerTest {
     private final RemoveCartItemUseCase removeCartItemUseCase = mock(RemoveCartItemUseCase.class);
     private final GetCartUseCase getCartUseCase = mock(GetCartUseCase.class);
     private final ClearCartUseCase clearCartUseCase = mock(ClearCartUseCase.class);
-    private final ShoppingCartExportService exportService = mock(ShoppingCartExportService.class);
+    private final ExportCartUseCase exportCartUseCase = mock(ExportCartUseCase.class);
 
     private final ShoppingCartController controller = new ShoppingCartController(
             addItemToCartUseCase,
@@ -40,7 +40,7 @@ class ShoppingCartControllerTest {
             removeCartItemUseCase,
             getCartUseCase,
             clearCartUseCase,
-            exportService
+            exportCartUseCase
     );
 
     @BeforeEach
@@ -58,33 +58,38 @@ class ShoppingCartControllerTest {
     }
 
     @Test
-    @DisplayName("getCart should return mapped ShoppingCartResponseDTO for current user")
+    @DisplayName("getCart should return mapped ShoppingCartResponseDTO for current user with links")
     void getCartShouldReturnCartForCurrentUser() {
         ShoppingCart cart = buildSampleCart();
         when(getCartUseCase.getCart("user1")).thenReturn(cart);
 
-        ResponseEntity<ShoppingCartResponseDTO> response = controller.getCart();
+        ResponseEntity<EntityModel<ShoppingCartResponseDTO>> response = controller.getCart();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ShoppingCartResponseDTO body = response.getBody();
+        EntityModel<ShoppingCartResponseDTO> model = response.getBody();
+        assertThat(model).isNotNull();
+        ShoppingCartResponseDTO body = model.getContent();
         assertThat(body).isNotNull();
         assertThat(body.userId()).isEqualTo("user1");
         assertThat(body.items()).hasSize(1);
         assertThat(body.total()).isEqualByComparingTo(cart.getTotalPrice());
+        assertThat(model.getLinks()).isNotEmpty();
         verify(getCartUseCase).getCart("user1");
     }
 
     @Test
-    @DisplayName("addItem should delegate to use case with current user and return created response")
+    @DisplayName("addItem should delegate to use case with current user and return created response with links")
     void addItemShouldDelegateAndReturnCreated() {
         CartItemRequestDTO request = new CartItemRequestDTO(1L, 2);
         ShoppingCart cart = buildSampleCart();
         when(addItemToCartUseCase.addItem(eq("user1"), eq(1L), eq(2))).thenReturn(cart);
 
-        ResponseEntity<ShoppingCartResponseDTO> response = controller.addItem(request);
+        ResponseEntity<EntityModel<ShoppingCartResponseDTO>> response = controller.addItem(request);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        ShoppingCartResponseDTO body = response.getBody();
+        EntityModel<ShoppingCartResponseDTO> model = response.getBody();
+        assertThat(model).isNotNull();
+        ShoppingCartResponseDTO body = model.getContent();
         assertThat(body).isNotNull();
         assertThat(body.userId()).isEqualTo("user1");
         assertThat(body.items()).hasSize(1);
@@ -92,16 +97,18 @@ class ShoppingCartControllerTest {
     }
 
     @Test
-    @DisplayName("updateItem should delegate to use case with current user and return updated cart")
+    @DisplayName("updateItem should delegate to use case with current user and return updated cart with links")
     void updateItemShouldDelegateAndReturnUpdatedCart() {
         CartItemUpdateRequestDTO request = new CartItemUpdateRequestDTO(3);
         ShoppingCart cart = buildSampleCart();
         when(updateCartItemQuantityUseCase.updateItemQuantity(eq("user1"), eq(1L), eq(3))).thenReturn(cart);
 
-        ResponseEntity<ShoppingCartResponseDTO> response = controller.updateItem(1L, request);
+        ResponseEntity<EntityModel<ShoppingCartResponseDTO>> response = controller.updateItem(1L, request);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ShoppingCartResponseDTO body = response.getBody();
+        EntityModel<ShoppingCartResponseDTO> model = response.getBody();
+        assertThat(model).isNotNull();
+        ShoppingCartResponseDTO body = model.getContent();
         assertThat(body).isNotNull();
         assertThat(body.userId()).isEqualTo("user1");
         verify(updateCartItemQuantityUseCase).updateItemQuantity("user1", 1L, 3);
@@ -125,18 +132,16 @@ class ShoppingCartControllerTest {
     @Test
     @DisplayName("clearCart should delegate to use case with current user and return 204")
     void clearCartShouldDelegateAndReturnNoContent() {
-        ResponseEntity<Void> response = controller.clearCart();
+        controller.clearCart();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         verify(clearCartUseCase).clearCart("user1");
     }
 
     @Test
-    @DisplayName("exportCart should export current cart to JSON file and return file path")
+    @DisplayName("exportCart should export current cart to JSON file via use case and return file path")
     void exportCartShouldExportAndReturnFilePath() {
-        ShoppingCart cart = buildSampleCart();
-        when(getCartUseCase.getCart("user1")).thenReturn(cart);
-        when(exportService.exportCart(cart)).thenReturn("/tmp/bookstore/cart-exports/shopping-cart-user1.json");
+        when(exportCartUseCase.exportCartForUser("user1"))
+                .thenReturn("/tmp/bookstore/cart-exports/shopping-cart-user1.json");
 
         ResponseEntity<ShoppingCartController.CartExportResponse> response = controller.exportCart();
 
@@ -145,8 +150,7 @@ class ShoppingCartControllerTest {
         assertThat(body).isNotNull();
         assertThat(body.message()).isEqualTo("Cart exported successfully");
         assertThat(body.filePath()).contains("shopping-cart-user1.json");
-        verify(getCartUseCase).getCart("user1");
-        verify(exportService).exportCart(cart);
+        verify(exportCartUseCase).exportCartForUser("user1");
     }
 }
 
