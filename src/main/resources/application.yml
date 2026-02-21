@@ -18,5 +18,10 @@ spring:
 security:
   jwt:
     secret: "change-this-secret-in-prod"
-#    Expiration time is so short in order to test token expiration during development. Adjust as needed.
-    expiration-minutes: 60
+#    Adjust as needed for your testing purpose
+    expiration-minutes: 1000
+
+cart:
+  export:
+    # Can be overridden via CART_EXPORT_DIR env var; on Windows set to C:\temp to match requirement
+    directory: ${CART_EXPORT_DIR:${user.home}/bookstore/cart-exports}
