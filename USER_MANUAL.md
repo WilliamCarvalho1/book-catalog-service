@@ -157,7 +157,7 @@ The response is `204 No Content` when successful.
 
 Shopping cart data is persisted in PostgreSQL in a `shopping_cart` table. Each row stores the full cart for a user as JSON.
 
-This satisfies the requirement to keep cart data as JSON, while using a database instead of a local path such as `c:\\temp`, which is not suitable for macOS.
+This satisfies the requirement to keep cart data as JSON, while using a database to be more reliably stored.
 
 In addition, the application can export the current shopping cart to a JSON file on disk to satisfy the requirement of generating a JSON file in a configurable directory.
 
