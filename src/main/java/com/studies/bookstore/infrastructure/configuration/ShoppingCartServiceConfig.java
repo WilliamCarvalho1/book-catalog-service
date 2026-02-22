@@ -1,6 +1,5 @@
 package com.studies.bookstore.infrastructure.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.studies.bookstore.adapter.out.persistence.JpaShoppingCartRepository;
 import com.studies.bookstore.adapter.out.persistence.ShoppingCartRepositoryAdapter;
 import com.studies.bookstore.application.port.in.*;
@@ -14,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
 public class ShoppingCartServiceConfig {
 
     @Bean
-    public ShoppingCartRepositoryPort shoppingCartRepositoryPort(JpaShoppingCartRepository repository, ObjectMapper objectMapper) {
-        return new ShoppingCartRepositoryAdapter(repository, objectMapper);
+    public ShoppingCartRepositoryPort shoppingCartRepositoryPort(JpaShoppingCartRepository repository) {
+        return new ShoppingCartRepositoryAdapter(repository);
     }
 
     @Bean
