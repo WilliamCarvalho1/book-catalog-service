@@ -145,7 +145,7 @@ class ShoppingCartControllerTest {
 
         ResponseEntity<ShoppingCartController.CartExportResponse> response = controller.exportCart();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         ShoppingCartController.CartExportResponse body = response.getBody();
         assertThat(body).isNotNull();
         assertThat(body.message()).isEqualTo("Cart exported successfully");
